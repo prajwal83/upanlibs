@@ -294,7 +294,7 @@ void strtok_m(const char* src, char chToken, tok_copy_func* tc_copy, int* iListS
         {
             if((index - iStartIndex) > 0)
             {
-				tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex)) ;
+				tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex), NULL) ;
                 iTokenIndex++ ;
             }
 
@@ -304,7 +304,7 @@ void strtok_m(const char* src, char chToken, tok_copy_func* tc_copy, int* iListS
 
     if((index - iStartIndex) > 0)
     {
-		tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex)) ;
+		tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex), NULL) ;
         iTokenIndex++ ;
     }
 
@@ -315,7 +315,8 @@ void strtok_c(const char* src,
 			tok_compare_func* tc_tok_func, 
 			tok_group_func* tc_group_func, 
 			tok_copy_func* tc_copy, 
-			int* iListSize) 
+			int* iListSize,
+			void* tc_copy_context)
 {
     int index ;
     int iStartIndex = 0 ;
@@ -328,7 +329,7 @@ void strtok_c(const char* src,
 		{
             if((index - iStartIndex) > 0)
             {
-				tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex)) ;
+				tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex), tc_copy_context) ;
                 iTokenIndex++ ;
             }
 
@@ -348,7 +349,7 @@ void strtok_c(const char* src,
         {
             if((index - iStartIndex) > 0)
             {
-				tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex)) ;
+				tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex), tc_copy_context) ;
                 iTokenIndex++ ;
             }
 
@@ -358,7 +359,7 @@ void strtok_c(const char* src,
 
     if((index - iStartIndex) > 0)
     {
-		tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex)) ;
+		tc_copy(iTokenIndex, src + iStartIndex, (index - iStartIndex), tc_copy_context) ;
         iTokenIndex++ ;
     }
 

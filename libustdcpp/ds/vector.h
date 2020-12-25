@@ -21,7 +21,6 @@
 #ifdef __LOCAL_TEST__
 #include "/usr/include/string.h"
 #else
-#include <string.h>
 #include <newalloc.h>
 #endif
 #include <exception.h>

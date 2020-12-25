@@ -53,6 +53,7 @@ include_directories(${PROJECT_SOURCE_DIR}/libc/sysdeps/mos/common/bits)
 include_directories(${PROJECT_SOURCE_DIR}/libcxxrt)
 
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/ds)
+include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/algo)
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/infra)
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/mem)
 

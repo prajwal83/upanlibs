@@ -17,9 +17,7 @@
  */
 #pragma once
 
-#include <ustring.h>
 #include <exception.h>
-#include <drivers/net/protocol/NetworkProtocolType.h>
 
 namespace upan {
 

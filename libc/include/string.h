@@ -38,7 +38,7 @@ extern "C" {
 
 typedef bool tok_compare_func(char ch) ;
 typedef bool tok_group_func(char ch) ;
-typedef void tok_copy_func(int index, const char* src, int len) ;
+typedef void tok_copy_func(int index, const char* src, int len, void* context) ;
 
 /* Copy N bytes of SRC to DEST.  */
 extern void *memcpy (void *__restrict __dest, __const void *__restrict __src, size_t __n) ;
@@ -111,7 +111,8 @@ extern void strtok_c(const char* src,
 			tok_compare_func* tc_tok_func, 
 			tok_group_func* tc_group_func, 
 			tok_copy_func* tc_copy, 
-			int* iListSize) ;
+			int* iListSize,
+			void* tc_copy_context) ;
 
 extern int strcnt(const char* str, const char ch) ;
 

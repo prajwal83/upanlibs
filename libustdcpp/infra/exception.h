@@ -49,7 +49,6 @@ class exception
 
 #else
 
-#include <ustring.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
