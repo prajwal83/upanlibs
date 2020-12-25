@@ -50,6 +50,8 @@ include_directories(${PROJECT_SOURCE_DIR}/libc/stdio)
 include_directories(${PROJECT_SOURCE_DIR}/libc/sysdeps/mos/common)
 include_directories(${PROJECT_SOURCE_DIR}/libc/sysdeps/mos/common/bits)
 
+include_directories(${PROJECT_SOURCE_DIR}/libcxxrt)
+
 #LIBC
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libc -name '*.c' | grep -v CMakeFile | grep -v './libc/sys/'" OUTPUT_VARIABLE LIBC_SRC)
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libc -name '*.c' | grep -v CMakeFile | grep './libc/sys/'" OUTPUT_VARIABLE LIBC_SYS_SRC)
@@ -61,5 +63,18 @@ target_compile_options(c PRIVATE -O0 ${SO_COMPILE_FLAGS})
 #LIBC static for kernel - so don't include sys-call code
 add_library(upanc STATIC ${LIBC_SRC})
 set_target_properties(upanc PROPERTIES OUTPUT_NAME c)
+
+#LIBGCCEH
+execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libgcceh -name '*.c' | grep -v CMakeFile" OUTPUT_VARIABLE GCCEH_SRC)
+string(REPLACE "\n" ";" GCCEH_SRC ${GCCEH_SRC})
+add_library(gcceh STATIC "${GCCEH_SRC}")
+target_compile_options(gcceh PRIVATE -DIN_GCC -DIN_LIBGCC2 -Dinhibit_libc -fbuilding-libgcc -fno-stack-protector)
+
+#LIBCXXRT
+execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libcxxrt -name '*.c' | grep -v CMakeFile" OUTPUT_VARIABLE CXXRT_SRC1)
+string(REPLACE "\n" ";" CXXRT_SRC1 ${CXXRT_SRC1})
+execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libcxxrt -name '*.cc' | grep -v CMakeFile" OUTPUT_VARIABLE CXXRT_SRC2)
+string(REPLACE "\n" ";" CXXRT_SRC2 ${CXXRT_SRC2})
+add_library(cxxrt STATIC ${CXXRT_SRC1} ${CXXRT_SRC2})
 
 link_directories(${OUTPUT_DIR})
