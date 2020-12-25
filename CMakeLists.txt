@@ -14,7 +14,7 @@
 #	 You should have received a copy of the GNU General Public License
 #	 along with this program.  If not, see <http://www.gnu.org/licenses/
 cmake_minimum_required(VERSION 3.15)
-project(UpanixApps)
+project(UpanixLibs)
 
 set(CROSS_TOOL_PATH $ENV{HOME}/opt/cross)
 set(OUTPUT_DIR ${PROJECT_SOURCE_DIR}/out)
@@ -52,6 +52,10 @@ include_directories(${PROJECT_SOURCE_DIR}/libc/sysdeps/mos/common/bits)
 
 include_directories(${PROJECT_SOURCE_DIR}/libcxxrt)
 
+include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/ds)
+include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/infra)
+include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/mem)
+
 #LIBC
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libc -name '*.c' | grep -v CMakeFile | grep -v './libc/sys/'" OUTPUT_VARIABLE LIBC_SRC)
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libc -name '*.c' | grep -v CMakeFile | grep './libc/sys/'" OUTPUT_VARIABLE LIBC_SYS_SRC)
@@ -76,5 +80,10 @@ string(REPLACE "\n" ";" CXXRT_SRC1 ${CXXRT_SRC1})
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libcxxrt -name '*.cc' | grep -v CMakeFile" OUTPUT_VARIABLE CXXRT_SRC2)
 string(REPLACE "\n" ";" CXXRT_SRC2 ${CXXRT_SRC2})
 add_library(cxxrt STATIC ${CXXRT_SRC1} ${CXXRT_SRC2})
+
+#LIBUSTDCPP
+execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libustdcpp -name '*.cpp' | grep -v CMakeFile" OUTPUT_VARIABLE LIB_USTD_CPP_SRC)
+string(REPLACE "\n" ";" LIB_USTD_CPP_SRC ${LIB_USTD_CPP_SRC})
+add_library(ustdcpp STATIC ${LIB_USTD_CPP_SRC})
 
 link_directories(${OUTPUT_DIR})
