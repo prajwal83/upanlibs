@@ -49,6 +49,7 @@
 
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 
 int errno;
 
@@ -779,7 +780,7 @@ void exit(int rv)
 	_exit(rv);
 }
 
-char* getenv(const char* var)
+const char* getenv(const char* var)
 {
   return SysProcess_GetEnv(var);
 }
@@ -791,15 +792,12 @@ int setenv(const char* var, const char* val)
 
 int putenv (char *string)
 {
-    int result;
-    char *name_end = strchr (string, '=');
-
-    if (name_end != NULL) 
-	{
-		*name_end = '\0' ;
-		return setenv(string, name_end + 1) ;
-    }
-    return -1;
+  char *name_end = strchr (string, '=');
+  if (name_end != NULL) {
+    *name_end = '\0' ;
+    return setenv(string, name_end + 1) ;
+  }
+  return -1;
 }
 
 /* MOSE */
@@ -820,7 +818,7 @@ void format_dir_attr(unsigned short attr, char* fmAttr)
 {
 	static const char* DIR_ATTR_FM_BASE = "----------" ;
 
-	typedef enum
+	enum DIR_ATTR_FM
 	{
 		DIR_ATTR_FM_FTYPE = 0,
 		DIR_ATTR_FM_OR,
@@ -832,7 +830,7 @@ void format_dir_attr(unsigned short attr, char* fmAttr)
 		DIR_ATTR_FM_TR,
 		DIR_ATTR_FM_TW,
 		DIR_ATTR_FM_TX
-	} DIR_ATTR_FM ;
+	};
 	
 	strcpy(fmAttr, DIR_ATTR_FM_BASE) ;
 

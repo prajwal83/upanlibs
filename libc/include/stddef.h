@@ -18,8 +18,8 @@
 #ifndef _STD_DEF_H_
 #define _STD_DEF_H_
 
-typedef unsigned size_t ;
-typedef unsigned long ssize_t ;
+typedef unsigned long size_t ;
+typedef long ssize_t ;
 typedef long int ptrdiff_t;
 
 #define offsetof(st, m) __builtin_offsetof(st, m)

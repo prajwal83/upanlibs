@@ -49,10 +49,18 @@ class option
       if (_isEmpty) {
         return upan::option<R>::empty();
       }
-      return mapLambda(_value);
+      return upan::option<R>(mapLambda(_value));
     }
 
-    const T& valueOrThrow(const upan::string& fileName, unsigned lineNo, const upan::string& error) const
+    template <typename R, typename LAMBDA>
+    upan::option<R> flatMap(const LAMBDA& mapLambda) {
+      if (_isEmpty) {
+        return upan::option<R>::empty();
+      }
+      return mapLambda(*_value);
+    }
+
+  const T& valueOrThrow(const upan::string& fileName, unsigned lineNo, const upan::string& error) const
     {
       if(_isEmpty)
         throw exception(fileName, lineNo, error);
@@ -99,9 +107,17 @@ public:
   }
 
   template <typename R, typename LAMBDA>
-  upan::option<R&> map(const LAMBDA& mapLambda) {
+  upan::option<R> map(const LAMBDA& mapLambda) {
     if (_isEmpty) {
-      return upan::option<R&>::empty();
+      return upan::option<R>::empty();
+    }
+    return upan::option<R>(mapLambda(*_value));
+  }
+
+  template <typename R, typename LAMBDA>
+  upan::option<R> flatMap(const LAMBDA& mapLambda) {
+    if (_isEmpty) {
+      return upan::option<R>::empty();
     }
     return mapLambda(*_value);
   }
@@ -112,7 +128,7 @@ public:
     return *_value;
   }
 
-  T& valueOrElse(const T& defaultValue) const {
+  T& valueOrElse(T& defaultValue) const {
     if(_isEmpty)
       return defaultValue;
     return *_value;

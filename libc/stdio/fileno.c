@@ -5,8 +5,6 @@
  * Dedicated to Toni.  See uClibc/DEDICATION.mjn3 for details.
  */
 
-#pragma once
-
 #include "_stdio.h"
 
 /*

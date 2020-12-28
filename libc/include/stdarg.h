@@ -24,8 +24,9 @@ typedef void* va_list ;
 extern "C" {
 #endif
 
+//to avoid pointer arithmetic on void* warning, add sizeof(unsigned) to unsigned value of the address and then cast to va_list (aka void*)
 #define va_start(var_list, last_known_arg) \
-var_list = (va_list)((unsigned)&last_known_arg) + sizeof(unsigned) ;
+var_list = (va_list)((unsigned)&last_known_arg + sizeof(unsigned)) ;
 
 #define va_end(var_list) ;
 

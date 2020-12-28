@@ -52,7 +52,7 @@ class MemPool
 				return false ;
 
 			int iTotalSize = CHUNK_SIZE * sizeof(T) ;
-			unsigned uiAddress = malloc(iTotalSize);
+			unsigned uiAddress = (unsigned) malloc(iTotalSize);
 
 			for(unsigned i = 0; i < CHUNK_SIZE; i++)
 			{
@@ -61,7 +61,7 @@ class MemPool
 				if(!m_mStackMemPool.Push(pVal))
 				{
 					printf("\n MemPool AllocateChunk Failed!!\n") ;
-					free(uiAddress);
+					free((void*)uiAddress);
 					return false ;
 				}
 			}
@@ -101,7 +101,7 @@ class MemPool
 		~MemPool()
 		{
 			for(unsigned i = 0; i < m_uiNoOfChunks; i++)
-				free(m_pAllocAddressArray[ i ]) ;
+				free((void*)m_pAllocAddressArray[ i ]) ;
 			delete[] m_pAllocAddressArray ;
 		}
 

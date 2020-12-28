@@ -125,7 +125,7 @@ void *bsearch(const void *key, const void *base, size_t /* nmemb */ high,
 			  size_t size, int (*compar)(const void *, const void *)) ;
 /* Algos End */
 
-char* getenv(const char* var) ;
+const char* getenv(const char* var) ;
 int setenv(const char* var, const char* val) ;
 int putenv(char* env) ;
 

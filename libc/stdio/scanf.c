@@ -233,6 +233,8 @@ int fscanf(FILE * __restrict stream, const char * __restrict format, ...)
 /**********************************************************************/
 #ifdef L_scanf
 
+int vfscanf_cecho (cecho_func* cechoFunc, const char* scan_buf, const Wchar *__restrict format, va_list arg);
+
 int getc_scanf(register struct scan_cookie* sc)
 {
     int i = sc->input_buffer_index ;
