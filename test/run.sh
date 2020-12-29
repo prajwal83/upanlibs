@@ -4,7 +4,7 @@ CXXFLAGS=-std=c++11
 
 ./compile.sh
 
-./test_vector
-./test_queue
-./test_list
-./test_map
+./test_vector.aout
+./test_queue.aout
+./test_list.aout
+./test_map.aout
