@@ -1,6 +1,7 @@
 *.o
 *.so
 *.a
+*.aout
 msh
 edit
 nasm/nasm
