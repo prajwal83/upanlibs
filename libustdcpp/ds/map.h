@@ -34,15 +34,6 @@ class _map_type
     {
       const K& operator()(const value_type& e) const { return e.first; }
     };
-
-    struct _element_assigner
-    {
-      void operator()(value_type& lhs, const value_type& rhs) const
-      {
-        const_cast<K&>(lhs.first) = rhs.first;
-        lhs.second = rhs.second;
-      }
-    };
 };
 
 template <typename K, typename V>

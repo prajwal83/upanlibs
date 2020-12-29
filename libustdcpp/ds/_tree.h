@@ -33,7 +33,6 @@ class _tree
     class _tree_iterator;
     class _const_tree_iterator;
     typename _c_type::_key_accessor get_key;
-    typename _c_type::_element_assigner element_assignee;
     typedef typename _c_type::value_type value_type;
     typedef typename _c_type::key_type key_type;
     using insert_result_t = upan::pair<_tree_iterator, bool>;
@@ -143,10 +142,6 @@ class _tree
         void update_height() 
         { 
           _height = upan::max(_tree::height(_left), _tree::height(_right)) + 1; 
-        }
-        void update_value(const value_type& element, const typename _c_type::_element_assigner& ea)
-        {
-          ea(_element, element);
         }
 
         node* successor()
@@ -370,7 +365,7 @@ class _tree
 
       return rebalance(n);
     }
-    
+
     node* erase(node* n, const key_type& key, bool& deleted)
     {
       if(n == nullptr)
@@ -379,9 +374,9 @@ class _tree
         return n;
       }
       
-      if(get_key(n->element()) < key)
+      if(key < get_key(n->element()))
         n->left(erase(n->left(), key, deleted));
-      else if(key < get_key(n->element()))
+      else if(get_key(n->element()) < key)
         n->right(erase(n->right(), key, deleted));
       else
       {
@@ -394,9 +389,30 @@ class _tree
         }
         else
         {
-          auto c = n->successor();
-          n->update_value(c->element(), element_assignee);
-          n->right(erase(n->right(), get_key(c->element()), deleted));
+          auto s = n->successor();
+
+          auto n_left = n->left();
+          auto n_right = n->right();
+
+          // the successor's left will be null in this case i.e. when both left and right != null
+          auto s_left = s->left();
+          auto s_right = s->right();
+
+          if (s == n_right) {
+            s->left(n_left);
+            delete n;
+            n = s;
+          } else {
+            s->left(n_left);
+            s->right(n_right);
+
+            s->parent()->left(n);
+            n->left(s_left);
+            n->right(s_right);
+
+            s->right(erase(s->right(), get_key(n->element()), deleted));
+            n = s;
+          }
         }
       }
 

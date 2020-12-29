@@ -19,7 +19,6 @@
 #define _UPAN_UNIQ_PTR_H_
 
 #include <string.h>
-#include <StringUtil.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>

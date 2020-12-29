@@ -34,14 +34,6 @@ class _set_type
     {
       const K& operator()(const K& key) const { return key; }
     };
-
-    struct _element_assigner
-    {
-      void operator()(value_type& lhs, const value_type& rhs) const
-      {
-        const_cast<K&>(lhs) = rhs;
-      }
-    };
 };
 
 template <typename K>
