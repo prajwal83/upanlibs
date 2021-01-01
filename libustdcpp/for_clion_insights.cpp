@@ -1,4 +1,5 @@
 #include "algo/stringalgo.h"
+#include "algo/algorithm.h"
 #include "mem/MemPool.h"
 #include "mem/newalloc.h"
 #include "infra/exception.h"
@@ -14,6 +15,5 @@
 #include "ds/map.h"
 #include "ds/set.h"
 #include "ds/queue.h"
-#include "ds/algorithm.h"
 #include "ds/BTree.h"
 #include "ds/ustring.h"

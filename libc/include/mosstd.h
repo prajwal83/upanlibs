@@ -52,6 +52,7 @@ typedef struct
 int exec(const char* szFileName, ...) ;
 int execv(const char* szFileName, int iNoOfArgs, char *const szArgList[]) ;
 int execvp(const char* szFileName, char *const szArgList[]) ;
+int exect(void* entryPoint, void* arg);
 int childalive(int pid) ;
 
 extern void SysProcess_WaitPID(int iProcessID) ;

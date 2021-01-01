@@ -43,6 +43,28 @@ int SysProcess_Exec(const char* szFileName, int iNoOfArgs, char *const szArgList
 	return iProcessID ;
 }
 
+int SysProcess_ThreadExec(uint32_t entryAddress, void* arg)
+{
+  __volatile__ int threadID;
+
+  __asm__ __volatile__("push %eax") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+
+  __asm__ __volatile__("pushl %0" : : "rm"(arg)) ;
+  __asm__ __volatile__("pushl %0" : : "rm"(entryAddress)) ;
+  DO_SYS_CALL(SYS_CALL_THREAD_EXEC) ;
+  __asm__ __volatile__("movl %%eax, %0" : "=m"(threadID) : ) ;
+  __asm__ __volatile__("pop %eax") ;
+
+  return threadID;
+}
+
 void SysProcess_WaitPID(int iProcessID)
 {
 	__asm__ __volatile__("push %eax") ;
@@ -307,6 +329,10 @@ int execvp(const char* szFileName, char *const szArgList[])
 	}
 
 	return SysProcess_Exec(szFileName, argc, szArgList) ;
+}
+
+int exect(void* entryPoint, void* arg) {
+  return SysProcess_ThreadExec((uint32_t) entryPoint, arg);
 }
 
 int childalive(int pid)

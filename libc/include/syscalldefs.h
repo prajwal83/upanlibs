@@ -82,6 +82,7 @@ typedef enum
 	SYS_CALL_PROC_START = 600,
 		SYS_CALL_DLL_RELOCATE,
 		SYS_CALL_PROCESS_EXEC,
+		SYS_CALL_THREAD_EXEC,
 		SYS_CALL_PROCESS_WAIT_PID,
 		SYS_CALL_PROCESS_EXIT,
 		SYS_CALL_PROCESS_SLEEP,
@@ -157,6 +158,7 @@ int SysMemory_Alloc(void** addr, unsigned uiSizeInBytes);
 int SysMemory_Free(void* uiAddress);
 int SysMemory_GetAllocSize(void* uiAddress, int* size);
 int SysProcess_Exec(const char* szFileName, int iNoOfArgs, char *const szArgList[]);
+int SysProcess_ThreadExec(uint32_t entryAddress, void* arg);
 void SysProcess_WaitPID(int iProcessID);
 void SysProcess_Exit(int iExitStatus);
 void SysProcess_Sleep(unsigned milisec);
