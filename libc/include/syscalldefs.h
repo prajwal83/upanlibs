@@ -158,7 +158,7 @@ int SysMemory_Alloc(void** addr, unsigned uiSizeInBytes);
 int SysMemory_Free(void* uiAddress);
 int SysMemory_GetAllocSize(void* uiAddress, int* size);
 int SysProcess_Exec(const char* szFileName, int iNoOfArgs, char *const szArgList[]);
-int SysProcess_ThreadExec(uint32_t entryAddress, void* arg);
+int SysProcess_ThreadExec(uint32_t threadCaller, uint32_t entryAddress, void* arg);
 void SysProcess_WaitPID(int iProcessID);
 void SysProcess_Exit(int iExitStatus);
 void SysProcess_Sleep(unsigned milisec);
