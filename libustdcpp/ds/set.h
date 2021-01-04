@@ -39,6 +39,9 @@ class _set_type
 template <typename K>
 class set : public _tree<_set_type<K>>
 {
+public:
+  typedef _tree<_set_type<K>> _parent_;
+  typedef typename _parent_::value_type value_type;
 };
 
 };

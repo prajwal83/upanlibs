@@ -80,6 +80,13 @@ class _tree
     const_iterator begin() const { return cbegin(); }
     const_iterator end() const { return cend(); }
 
+    template <typename LAMBDA>
+    void foreach(const LAMBDA& lambda) const {
+      for(auto i = begin(); i != end(); ++i) {
+        lambda(*i);
+      }
+    }
+
     void clear() 
     { 
       clear(_root);
