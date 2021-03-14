@@ -50,12 +50,24 @@ include_directories(${PROJECT_SOURCE_DIR}/libc/stdio)
 include_directories(${PROJECT_SOURCE_DIR}/libc/sysdeps/mos/common)
 include_directories(${PROJECT_SOURCE_DIR}/libc/sysdeps/mos/common/bits)
 
+include_directories(${PROJECT_SOURCE_DIR}/libm/include)
+include_directories(${PROJECT_SOURCE_DIR}/libm/include/bits)
+
 include_directories(${PROJECT_SOURCE_DIR}/libcxxrt)
 
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/ds)
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/algo)
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/infra)
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/mem)
+
+#include_directories(${PROJECT_SOURCE_DIR}/libsfn)
+#include_directories(${PROJECT_SOURCE_DIR}/libsfn/freetype2/devel)
+#include_directories(${PROJECT_SOURCE_DIR}/libsfn/freetype2/include)
+#add_compile_definitions(FT_CONFIG_MODULES_H="<ftmodule.h>")
+#add_compile_definitions(FT2_BUILD_LIBRARY)
+
+include_directories(${PROJECT_SOURCE_DIR}/libusfn)
+include_directories(${PROJECT_SOURCE_DIR}/libusfn/zlib)
 
 #LIBC
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libc -name '*.c' | grep -v CMakeFile | grep -v './libc/sys/'" OUTPUT_VARIABLE LIBC_SRC)
@@ -68,6 +80,16 @@ target_compile_options(c PRIVATE -O0 ${SO_COMPILE_FLAGS})
 #LIBC static for kernel - so don't include sys-call code
 add_library(upanc STATIC ${LIBC_SRC})
 set_target_properties(upanc PROPERTIES OUTPUT_NAME c)
+
+#LIBM
+execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libm -name '*.c' | grep -v CMakeFile" OUTPUT_VARIABLE LIBM_SRC)
+string(REPLACE "\n" ";" LIBM_SRC ${LIBM_SRC})
+#LIBM shared lib
+add_library(m SHARED "${LIBM_SRC}")
+target_compile_options(m PRIVATE ${SO_COMPILE_FLAGS})
+#LIBM static lib for kernel
+add_library(upanm STATIC ${LIBM_SRC})
+set_target_properties(upanm PROPERTIES OUTPUT_NAME m)
 
 #LIBGCCEH
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libgcceh -name '*.c' | grep -v CMakeFile" OUTPUT_VARIABLE GCCEH_SRC)
@@ -86,5 +108,15 @@ add_library(cxxrt STATIC ${CXXRT_SRC1} ${CXXRT_SRC2})
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libustdcpp -name '*.cpp' | grep -v CMakeFile" OUTPUT_VARIABLE LIB_USTD_CPP_SRC)
 string(REPLACE "\n" ";" LIB_USTD_CPP_SRC ${LIB_USTD_CPP_SRC})
 add_library(ustdcpp STATIC ${LIB_USTD_CPP_SRC})
+
+#LIBSFN
+#execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libsfn -name '*.c' | grep -v CMakeFile | grep -v builds" OUTPUT_VARIABLE LIB_SFN_SRC)
+#string(REPLACE "\n" ";" LIB_SFN_SRC ${LIB_SFN_SRC})
+#add_library(sfn STATIC ${LIB_SFN_SRC})
+
+#LIBUSFN
+execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libusfn -name '*.cpp' | grep -v CMakeFile | grep -v builds" OUTPUT_VARIABLE LIB_USFN_SRC)
+string(REPLACE "\n" ";" LIB_USFN_SRC ${LIB_USFN_SRC})
+add_library(usfn STATIC ${LIB_USFN_SRC})
 
 link_directories(${OUTPUT_DIR})

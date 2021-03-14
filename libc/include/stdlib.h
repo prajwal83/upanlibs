@@ -21,6 +21,7 @@
 # include <features.h>
 # include <abort.h>
 # include <stddef.h>
+# include <malloc.h>
 # include <bits/uClibc_uintmaxtostr.h>
 
 #if defined __cplusplus

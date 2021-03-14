@@ -139,6 +139,7 @@ extern int vfprintf (FILE * __restrict stream, register const FMT_TYPE * __restr
 extern int vsprintf(char *__restrict buf, const char * __restrict format, va_list arg) ;
 extern void perror(register const char *s) ;
 extern int vsnprintf(char *__restrict buf, size_t size, const char * __restrict format, va_list arg) ;
+extern int vprintf(const char * __restrict format, va_list arg);
 void setbuf(FILE * __restrict stream, register char * __restrict buf) ;
 
 OFFSET_TYPE ftell(register FILE *stream) ;
