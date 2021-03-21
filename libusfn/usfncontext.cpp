@@ -144,7 +144,7 @@ namespace usfn {
       if(family != FAMILY_ANY && (family > FAMILY_HAND || !_len[family])) {
         throw upan::exception(XLOC, "usfn: font family not found: %d", family);
       }
-      _s = NULL;
+      _s = _fnt[family][0];
     }
 
     _f = NULL;
@@ -154,7 +154,62 @@ namespace usfn {
     _line = 0;
   }
 
-  int Context::Render(FrameBuffer& dst, const char *str) {
+  // suitable for console
+  void Context::RenderCharacter(FrameBuffer& dst, uint32_t unicode) {
+#define USFN_PIXEL uint32_t
+    register USFN_PIXEL *o, *p;
+    register uint8_t *ptr, *chr = NULL, *frg;
+    register int i, j, k, l, m, y = 0, w, s = dst.p / sizeof(USFN_PIXEL);
+
+    _f = _s;
+
+    if(!_f || _f->magic[0] != 'S' || _f->magic[1] != 'F' || _f->magic[2] != 'N' || _f->magic[3] != '2' || !dst.ptr || !dst.p) {
+      throw upan::exception(XLOC, "invalid font, %d", _f);
+    }
+    w = dst.w < 0 ? -dst.w : dst.w;
+    for(ptr = (uint8_t*)_f + _f->characters_offs, i = 0; i < 0x110000; i++) {
+      if(ptr[0] == 0xFF) { i += 65535; ptr++; }
+      else if((ptr[0] & 0xC0) == 0xC0) { j = (((ptr[0] & 0x3F) << 8) | ptr[1]); i += j; ptr += 2; }
+      else if((ptr[0] & 0xC0) == 0x80) { j = (ptr[0] & 0x3F); i += j; ptr++; }
+      else { if((uint32_t)i == unicode) { chr = ptr; break; } ptr += 6 + ptr[1] * (ptr[0] & 0x40 ? 6 : 5); }
+    }
+    if(!chr) {
+      throw upan::exception(XLOC, "no Glyph found");
+    }
+    ptr = chr + 6; o = (USFN_PIXEL*)((uint8_t*)dst.ptr + dst.y * dst.p + dst.x * sizeof(USFN_PIXEL));
+    for(i = 0; i < chr[1]; i++, ptr += chr[0] & 0x40 ? 6 : 5) {
+      if(ptr[0] == 255 && ptr[1] == 255) continue;
+      frg = (uint8_t*)_f + (chr[0] & 0x40 ? ((ptr[5] << 24) | (ptr[4] << 16) | (ptr[3] << 8) | ptr[2]) :
+                                  ((ptr[4] << 16) | (ptr[3] << 8) | ptr[2]));
+      if((frg[0] & 0xE0) != 0x80) continue;
+      if(dst.bg) {
+        for(; y < ptr[1] && (!dst.h || dst.y + y < dst.h); y++, o += s) {
+          for(p = o, j = 0; j < chr[2] && (!w || dst.x + j < w); j++, p++)
+            *p = dst.bg;
+        }
+      } else { o += (int)(ptr[1] - y) * s; y = ptr[1]; }
+      k = ((frg[0] & 0x1F) + 1) << 3; j = frg[1] + 1; frg += 2;
+      for(m = 1; j && (!dst.h || dst.y + y < dst.h); j--, y++, o += s)
+        for(p = o, l = 0; l < k; l++, p++, m <<= 1) {
+          if(m > 0x80) { frg++; m = 1; }
+          if(dst.x + l >= 0 && (!w || dst.x + l < w)) {
+            if(*frg & m) {
+              *p = dst.fg;
+            } else if(dst.bg) {
+              *p = dst.bg;
+            }
+          }
+        }
+    }
+    if(dst.bg)
+      for(; y < chr[3] && (!dst.h || dst.y + y < dst.h); y++, o += s) {
+        for(p = o, j = 0; j < chr[2] && (!w || dst.x + j < w); j++, p++)
+          *p = dst.bg;
+      }
+    dst.x += chr[4]; dst.y += chr[5];
+  }
+
+  int Context::Render(FrameBuffer& dst, const char *str, bool fillBG) {
     Font **fl;
     uint8_t *ptr = NULL, *frg, *end, *tmp, color, ci = 0, cb = 0, cs;
     //TODO:
@@ -544,7 +599,7 @@ namespace usfn {
           }
           if(m) { sR /= m; sG /= m; sB /= m; sA /= m; }
           else { sR >>= 8; sG >>= 8; sB >>= 8; sA >>= 8; }
-          if(sA > 15) {
+          if(sA > 15 || fillBG) {
             *Ol = ((sA > 255 ? 255 : sA) << 24) | ((sR > 255 ? 255 : sR) << (16 - cs)) |
                   ((sG > 255 ? 255 : sG) << 8) | ((sB > 255 ? 255 : sB) << cs);
             if(y == n) {

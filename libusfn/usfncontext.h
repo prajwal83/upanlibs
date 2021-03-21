@@ -25,7 +25,8 @@ namespace usfn {
       Context();
       void Load(const uint8_t* fontData);
       void Select(int family, const char *name, int style, int size);
-      int Render(FrameBuffer& dst, const char *str);
+      void RenderCharacter(FrameBuffer& dst, uint32_t unicode);
+      int Render(FrameBuffer& dst, const char *str, bool fillBG);
 
     private:
       void AddLineToContour(int p, int h, int x, int y);
