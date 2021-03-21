@@ -19,6 +19,7 @@
 #include <usfncontext.h>
 #include <exception.h>
 #include <uzlib.h>
+#include <vector.h>
 
 namespace usfn {
   Context::Context() {
@@ -212,10 +213,6 @@ namespace usfn {
   int Context::Render(FrameBuffer& dst, const char *str, bool fillBG) {
     Font **fl;
     uint8_t *ptr = NULL, *frg, *end, *tmp, color, ci = 0, cb = 0, cs;
-    //TODO:
-//    uint8_t dec_CHECK[65536];
-  //  uint16_t r_CHECK[640];
-    uint8_t dec[65536];
     uint16_t r[640];
 
     uint32_t unicode, P, O, *Op, *Ol;
@@ -509,13 +506,14 @@ namespace usfn {
           k = (((frg[0] & 0x1F) << 8) | frg[1]) + 1; B = frg[2] + 1; A = frg[3] + 1; x >>= PREC_BITS; y >>= PREC_BITS;
           b = B * h / _f->height; a = A * h / _f->height;
           if(_g->d < y + a) _g->d = y + a;
-          frg += 4; end = frg + k; i = 0;
+          frg += 4; end = frg + k;
+          upan::vector<uint32_t> dec;
           while(frg < end) {
             l = ((*frg++) & 0x7F) + 1;
             if(frg[-1] & 0x80) {
-              while(l--) dec[i++] = *frg;
+              while(l--) dec.push_back(*frg);
               frg++;
-            } else while(l--) dec[i++] = *frg++;
+            } else while(l--) dec.push_back(*frg++);
           }
           for(j = 0; j < a; j++) {
             k = j * A / a * B;
