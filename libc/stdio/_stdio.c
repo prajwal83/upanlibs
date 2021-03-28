@@ -440,3 +440,9 @@ FILE* _stdio_get_stdout() { return _stdio_streams + 1 ; }
 FILE* _stdio_get_stderr() { return _stdio_streams + 2 ; }
 
 #endif
+
+#include <syscalldefs.h>
+
+void putrawc(const char ch, unsigned uiAttr, bool bUpdateCursorOnScreen) {
+  SysDisplay_RawCharacter(ch, uiAttr, bUpdateCursorOnScreen);
+}

@@ -29,7 +29,6 @@ extern void SysDisplay_ClearScreen() ;
 extern void SysDisplay_Character(const char ch, unsigned uiAttr) ;
 extern void SysDisplay_Message(const char* szMessage, unsigned uiAttr) ;
 extern void SysDisplay_Address(const char* szMessage, unsigned uiNumber) ;
-extern void SysDisplay_RawCharacter(const char ch, unsigned uiAttr, bool bUpdateCursorOnScreen) ;
 
 #define __UCLIBC_HAS_FLOATS__ 1
 
@@ -37,7 +36,6 @@ extern void SysDisplay_RawCharacter(const char ch, unsigned uiAttr, bool bUpdate
 #define putchar(ch)			SysDisplay_Character(ch, Display_WHITE_ON_BLACK)
 //#define puts(msg)			SysDisplay_Message(msg, Display_WHITE_ON_BLACK)
 #define putnum(msg, num) 	SysDisplay_Address(msg, num)
-#define putrawc(ch, attr, upcur)	SysDisplay_RawCharacter(ch, attr, upcur)
 
 #define OFFSET_TYPE	long int
 
@@ -176,6 +174,7 @@ int getc_unlocked(FILE *stream) ;
 int ungetc(int c, register FILE *stream) ;
 int setvbuf(register FILE * __restrict stream, register char * __restrict buf, int mode, size_t size) ;
 FILE *fdopen(int filedes, const char *mode) ;
+void putrawc(const char ch, unsigned uiAttr, bool bUpdateCursorOnScreen);
 
 #if defined __cplusplus
 }
