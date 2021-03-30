@@ -17,6 +17,7 @@
  */
 # include <syscalldefs.h>
 # include <ctype.h>
+#include <cdisplay.h>
 
 void SysDisplay_Message(const char* szMessage, unsigned uiAttr)
 {
@@ -179,6 +180,23 @@ void SysDisplay_RawCharacter(__volatile__ const char ch, __volatile__ unsigned u
 
 	DO_SYS_CALL(SYS_CALL_DISPLAY_RAW_CHAR) ;
 	__asm__ __volatile__("pop %eax") ;
+}
+
+void SysDisplay_RawCharacterArea(const MChar* src, uint32_t rows, uint32_t cols, int curPos) {
+  __asm__ __volatile__("push %eax") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+
+  __asm__ __volatile__("pushl %0" : : "rm"(curPos)) ;
+  __asm__ __volatile__("pushl %0" : : "rm"(cols)) ;
+  __asm__ __volatile__("pushl %0" : : "rm"(rows)) ;
+  __asm__ __volatile__("pushl %0" : : "rm"(src)) ;
+
+  DO_SYS_CALL(SYS_CALL_DISPLAY_RAW_CHAR_AREA) ;
+  __asm__ __volatile__("pop %eax") ;
 }
 
 void SysDisplay_GetSize(unsigned* retMaxRows, unsigned* retMaxCols)

@@ -17,6 +17,7 @@
  */
 #pragma once
 #include <ctype.h>
+#include "stdint.h"
 
 #define Display_CURSOR_CUR -1
 #define Display_WHITE_ON_BLACK 0x07
@@ -25,10 +26,18 @@
 extern "C" {
 #endif
 
+#define NO_CHAR				234
+
+typedef struct {
+  uint8_t _ch;
+  uint8_t	_attr;
+} MChar;
+
 extern void	SysDisplay_MoveCursor(int n) ;
 extern void	SysDisplay_ClearLine(int pos) ;
 extern void	SysDisplay_SetCursor(int pos, bool bUpdateCursorOnScreen) ;
 extern int	SysDisplay_GetCursor() ;
+extern void SysDisplay_GetSize(unsigned* retMaxRows, unsigned* retMaxCols);
 
 #define movcursor(n)		SysDisplay_MoveCursor(n)
 #define clrline(pos)		SysDisplay_ClearLine(pos)

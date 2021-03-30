@@ -27,6 +27,7 @@ extern "C" {
 # include <fs.h>
 # include <mosstd.h>
 # include <drive.h>
+#include "cdisplay.h"
 
 #define NO_OF_SYSCALL_PARAMS 10
 
@@ -48,6 +49,7 @@ typedef enum
 		SYS_CALL_DISPLAY_SET_CURSOR,
 		SYS_CALL_DISPLAY_GET_CURSOR,
 		SYS_CALL_DISPLAY_RAW_CHAR,
+    SYS_CALL_DISPLAY_RAW_CHAR_AREA,
     SYS_CALL_DISPLAY_SIZE,
 	SYS_CALL_DISPLAY_END,
 	
@@ -128,6 +130,7 @@ void SysDisplay_Address(const char* szMessage, unsigned uiNumber);
 void SysDisplay_SetCursor(__volatile__ int iCurPos, __volatile__ bool bUpdateCursorOnScreen);
 int SysDisplay_GetCursor();
 void SysDisplay_RawCharacter(__volatile__ const char ch, __volatile__ unsigned uiAttr, __volatile__ bool bUpdateCursorOnScreen);
+void SysDisplay_RawCharacterArea(const MChar* src, uint32_t rows, uint32_t cols, int curPos);
 
 int SysDrive_ChangeDrive(const char* szDriveName);
 int SysDrive_ShowDrives(DriveStat** pDriveList, int* iListSize);

@@ -145,6 +145,7 @@ int fseek(register FILE *stream, OFFSET_TYPE offset, int whence) ;
 
 # include <bits/uClibc_stdio.h>
 # include <bits/stdio_lim.h>
+# include <cdisplay.h>
 
 typedef __STDIO_fpos_t fpos_t;
 
@@ -174,7 +175,8 @@ int getc_unlocked(FILE *stream) ;
 int ungetc(int c, register FILE *stream) ;
 int setvbuf(register FILE * __restrict stream, register char * __restrict buf, int mode, size_t size) ;
 FILE *fdopen(int filedes, const char *mode) ;
-void putrawc(const char ch, unsigned uiAttr, bool bUpdateCursorOnScreen);
+void uiwritec(const char ch, unsigned uiAttr, bool bUpdateCursorOnScreen);
+void uiwritea(const MChar* src, uint32_t rows, uint32_t cols, int curPos);
 
 #if defined __cplusplus
 }

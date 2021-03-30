@@ -442,7 +442,12 @@ FILE* _stdio_get_stderr() { return _stdio_streams + 2 ; }
 #endif
 
 #include <syscalldefs.h>
+#include <cdisplay.h>
 
-void putrawc(const char ch, unsigned uiAttr, bool bUpdateCursorOnScreen) {
+void uiwritec(const char ch, unsigned uiAttr, bool bUpdateCursorOnScreen) {
   SysDisplay_RawCharacter(ch, uiAttr, bUpdateCursorOnScreen);
+}
+
+void uiwritea(const MChar* src, uint32_t rows, uint32_t cols, int curPos) {
+  SysDisplay_RawCharacterArea(src, rows, cols, curPos);
 }
