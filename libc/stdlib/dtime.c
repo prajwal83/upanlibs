@@ -16,6 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/
  */
 # include <dtime.h>
+# include <syscalldefs.h>
 
 time_t time(time_t * t)
 {
@@ -44,3 +45,11 @@ clock_t clock()
 	return 0 ;
 }
 
+int gettimeofday(struct timeval* pTV)
+{
+  return SysUtil_GetTimeOfDay(pTV) ;
+}
+
+uint32_t btime() {
+  return SysUtil_GetTimeSinceBoot();
+}

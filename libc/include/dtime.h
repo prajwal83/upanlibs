@@ -72,6 +72,8 @@ extern void SysUtil_GetDateTime(RTCTime* pRTCTime) ;
 #define dtime(prtc) SysUtil_GetDateTime(prtc)
 
 int gettimeofday(struct timeval*) ;
+//time since boot
+uint32_t btime();
 
 // As per POSIX...
 #define CLOCKS_PER_SEC 1000000
