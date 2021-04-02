@@ -113,8 +113,9 @@ typedef enum
 
 	SYS_CALL_UTIL_START = 1200,
 		SYS_CALL_UTIL_DTIME,
+    SYS_CALL_UTIL_BTIME,
+    SYS_CALL_UTIL_TOD,
 		SYS_CALL_UTIL_REBOOT,
-		SYS_CALL_UTIL_TOD,
 	SYS_CALL_UTIL_END,
 
 } SYS_CALL_NUMBERS ;
@@ -177,6 +178,7 @@ void SysUtil_GetDateTime(RTCTime* pRTCTime);
 void SysUtil_Reboot();
 
 int SysUtil_GetTimeOfDay(struct timeval* pTV);
+uint32_t SysUtil_GetTimeSinceBoot();
 
 #if defined __cplusplus
 }

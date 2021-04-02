@@ -75,8 +75,25 @@ int SysUtil_GetTimeOfDay(struct timeval* pTV)
 	return iRet ;
 }
 
-int gettimeofday(struct timeval* pTV)
+uint32_t SysUtil_GetTimeSinceBoot()
 {
-	return SysUtil_GetTimeOfDay(pTV) ;
-}
+  __volatile__ int iRet ;
 
+  __asm__ __volatile__("push %eax") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+
+  DO_SYS_CALL(SYS_CALL_UTIL_BTIME) ;
+
+  __asm__ __volatile__("movl %%eax, %0" : "=m"(iRet) : ) ;
+  __asm__ __volatile__("pop %eax") ;
+
+  return iRet ;
+}
