@@ -69,6 +69,8 @@ include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/mem)
 include_directories(${PROJECT_SOURCE_DIR}/libusfn)
 include_directories(${PROJECT_SOURCE_DIR}/libusfn/zlib)
 
+include_directories(${PROJECT_SOURCE_DIR}/libupanui)
+
 #LIBC
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libc -name '*.c' | grep -v CMakeFile | grep -v './libc/sys/'" OUTPUT_VARIABLE LIBC_SRC)
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libc -name '*.c' | grep -v CMakeFile | grep './libc/sys/'" OUTPUT_VARIABLE LIBC_SYS_SRC)
@@ -118,5 +120,10 @@ add_library(ustdcpp STATIC ${LIB_USTD_CPP_SRC})
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libusfn -name '*.cpp' | grep -v CMakeFile | grep -v builds" OUTPUT_VARIABLE LIB_USFN_SRC)
 string(REPLACE "\n" ";" LIB_USFN_SRC ${LIB_USFN_SRC})
 add_library(usfn STATIC ${LIB_USFN_SRC})
+
+#LIBUPANUI
+execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libupanui -name '*.cpp' | grep -v CMakeFile" OUTPUT_VARIABLE LIB_UPANUI_CPP_SRC)
+string(REPLACE "\n" ";" LIB_UPANUI_CPP_SRC ${LIB_UPANUI_CPP_SRC})
+add_library(upanui STATIC ${LIB_UPANUI_CPP_SRC})
 
 link_directories(${OUTPUT_DIR})

@@ -49,7 +49,7 @@ typedef struct
 	int pos ;
 } STDBUF ;
 
-typedef void cecho_func(char ch) ;
+typedef void cecho_func(char ch, void*) ;
 
 //extern FILE *stdin ;
 //extern FILE *stdout ;
@@ -115,9 +115,6 @@ int fgetc(register FILE *stream) ;
 int getc(register FILE *stream) ;
 char* fgets(char *__restrict s, int n, register FILE * __restrict stream) ;
 
-int scanf_cecho(cecho_func* cecho_func, const char * __restrict format, ...) ;
-int vsscanf_cecho(cecho_func* cechoFunc, const char* __restrict buf, const char * __restrict format, va_list arg) ;
-
 void putsl(const char* s, size_t len) ;
 
 int fflush(FILE *stream);
@@ -161,8 +158,8 @@ FILE* _stdio_get_stderr() ;
 #define stdout	_stdio_get_stdout()
 #define stderr	_stdio_get_stderr()
 
-extern int vsscanf_cecho(cecho_func* cechoFunc, const char* __restrict buf, const char * __restrict format, va_list arg) ;
-extern int scanf_cecho(cecho_func* cecho_func, const char * __restrict format, ...) ;
+extern int vsscanf_cecho(cecho_func* cechoFunc, void* private_data, const char* __restrict buf, const char * __restrict format, va_list arg) ;
+extern int scanf_cecho(cecho_func* cecho_func, void* private_data, const char * __restrict format, ...) ;
 
 extern void _stdio_init(void) ;
 extern void _stdio_term(void) ;

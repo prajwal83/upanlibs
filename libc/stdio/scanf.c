@@ -145,7 +145,7 @@ _stdlib_strto_l(register const char * __restrict str, char ** __restrict endptr,
 /**********************************************************************/
 // MOSS
 #define MAX_READ_LEN	BUFSIZ
-void read_input_till_char(cecho_func* cechoFunc, char* in_buf, const int max_read_len, bool echo, int end_ch) ;
+void read_input_till_char(cecho_func* cechoFunc, void* private_data, char* in_buf, const int max_read_len, bool echo, int end_ch) ;
 // MOSE
 /**********************************************************************/
 
@@ -233,7 +233,7 @@ int fscanf(FILE * __restrict stream, const char * __restrict format, ...)
 /**********************************************************************/
 #ifdef L_scanf
 
-int vfscanf_cecho (cecho_func* cechoFunc, const char* scan_buf, const Wchar *__restrict format, va_list arg);
+int vfscanf_cecho (cecho_func* cechoFunc, void* private_data, const char* scan_buf, const Wchar *__restrict format, va_list arg);
 
 int getc_scanf(register struct scan_cookie* sc)
 {
@@ -250,7 +250,7 @@ int getc_scanf(register struct scan_cookie* sc)
     return sc->input_buffer[i] ;
 }
 
-void stdout_cecho(char ch)
+void stdout_cecho(char ch, void* unused)
 {
 	if(ch == Keyboard_BACKSPACE)
 	{
@@ -269,7 +269,7 @@ int scanf(const char * __restrict format, ...)
 
 	va_start(arg, format);
 	//rv = vfscanf(stdin, format, arg);
-	rv = vfscanf_cecho(&stdout_cecho, NULL, format, arg);
+	rv = vfscanf_cecho(&stdout_cecho, NULL, NULL, format, arg);
 	va_end(arg);
 
 	return rv;
@@ -2249,7 +2249,7 @@ int __psfs_do_numeric(psfs_t *psfs, struct scan_cookie *sc)
 /**********************************************************************/
 // MOSS
 
-void read_input_till_char(cecho_func* cechoFunc, char* in_buf, const int max_read_len, bool echo, int end_ch)
+void read_input_till_char(cecho_func* cechoFunc, void* private_data, char* in_buf, const int max_read_len, bool echo, int end_ch)
 {
 	int cur_read_pos = 0 ;
 	int ch ;
@@ -2287,7 +2287,7 @@ void read_input_till_char(cecho_func* cechoFunc, char* in_buf, const int max_rea
 				if(cur_read_pos > 0)
 				{
 					if(echo)
-						cechoFunc(ch) ;
+						cechoFunc(ch, private_data) ;
 					cur_read_pos-- ;
 				}
 				break ;
@@ -2305,7 +2305,7 @@ void read_input_till_char(cecho_func* cechoFunc, char* in_buf, const int max_rea
 					ch = '\n' ;
 					in_buf[cur_read_pos++] = ch ;
 					if(echo)
-						cechoFunc(ch) ;
+						cechoFunc(ch, private_data) ;
 				}
 				break ;
 
@@ -2314,13 +2314,13 @@ void read_input_till_char(cecho_func* cechoFunc, char* in_buf, const int max_rea
 				{
 					in_buf[cur_read_pos++] = ch ;
 					if(echo)
-						cechoFunc(ch) ;
+						cechoFunc(ch, private_data) ;
 				}
 		}
 	}
 }
 
-int vfscanf_cecho (cecho_func* cechoFunc, const char* scan_buf, const Wchar *__restrict format, va_list arg)
+int vfscanf_cecho (cecho_func* cechoFunc, void* private_data, const char* scan_buf, const Wchar *__restrict format, va_list arg)
 {
 	const Wuchar *fmt;
 	unsigned char *b;
@@ -2334,7 +2334,7 @@ int vfscanf_cecho (cecho_func* cechoFunc, const char* scan_buf, const Wchar *__r
 	if(scan_buf)
 		memcpy(sc.input_buffer, scan_buf, strlen(scan_buf)) ;
 	else
-		read_input_till_char(cechoFunc, sc.input_buffer, MAX_READ_LEN - 1, true, Keyboard_ENTER) ;
+		read_input_till_char(cechoFunc, private_data, sc.input_buffer, MAX_READ_LEN - 1, true, Keyboard_ENTER) ;
 
 #define MAX_DIGITS 65			/* Allow one leading 0. */
 	unsigned char buf[MAX_DIGITS+2];
@@ -2579,18 +2579,18 @@ int vfscanf_cecho (cecho_func* cechoFunc, const char* scan_buf, const Wchar *__r
 	return psfs.cnt;
 }
 
-int vsscanf_cecho(cecho_func* cechoFunc, const char* __restrict buf, const char * __restrict format, va_list arg)
+int vsscanf_cecho(cecho_func* cechoFunc, void* private_data, const char* __restrict buf, const char * __restrict format, va_list arg)
 {
-	return vfscanf_cecho(cechoFunc, buf, format, arg);
+	return vfscanf_cecho(cechoFunc, private_data, buf, format, arg);
 }
 
-int scanf_cecho(cecho_func* cecho_func, const char * __restrict format, ...)
+int scanf_cecho(cecho_func* cecho_func, void* private_data, const char * __restrict format, ...)
 {
 	va_list arg;
 	int rv;
 
 	va_start(arg, format);
-	rv = vfscanf_cecho(cecho_func, NULL, format, arg);
+	rv = vfscanf_cecho(cecho_func, private_data, NULL, format, arg);
 	va_end(arg);
 
 	return rv;

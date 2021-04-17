@@ -60,10 +60,10 @@ class option
       return mapLambda(*_value);
     }
 
-  const T& valueOrThrow(const upan::string& fileName, unsigned lineNo, const upan::string& error) const
+  const T& valueOrThrow(const upan::string& fileName, unsigned lineNo, const upan::error& error) const
     {
       if(_isEmpty)
-        throw exception(fileName, lineNo, error);
+        throw upan::exception(fileName, lineNo, error);
       return _value;
     }
 
