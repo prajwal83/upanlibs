@@ -70,6 +70,7 @@ include_directories(${PROJECT_SOURCE_DIR}/libusfn)
 include_directories(${PROJECT_SOURCE_DIR}/libusfn/zlib)
 
 include_directories(${PROJECT_SOURCE_DIR}/libupanui)
+include_directories(${PROJECT_SOURCE_DIR}/libupanui/image)
 
 #LIBC
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libc -name '*.c' | grep -v CMakeFile | grep -v './libc/sys/'" OUTPUT_VARIABLE LIBC_SRC)
