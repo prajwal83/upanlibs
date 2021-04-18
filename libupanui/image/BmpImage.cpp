@@ -29,6 +29,11 @@ namespace upanui {
 
   }
 
+  void BmpImage::DebugPrint() const {
+    _header.DebugPrint();
+    _infoHeader.DebugPrint();
+  }
+
   void BmpImage::Load(const void* imageData) {
     if (imageData == nullptr) {
       throw upan::exception(XLOC, "imageData can't be null");
@@ -76,6 +81,34 @@ namespace upanui {
     const uint32_t imageBufferSize = _infoHeader._width * _infoHeader._height;
     _imageBuffer.reset(new uint32_t[imageBufferSize]);
 
+    int scanLinePadding = 0;
+    switch(_infoHeader._bitsPerPixel) {
+      case 4: {
+        //2 pixels in 1 byte
+        int delta = (width() / 2) % 4;
+        if (delta) {
+          scanLinePadding = (4 - delta) * 2;
+        }
+      }
+        break;
+      case 8: {
+        //1 pixel per byte
+        int delta = width() % 4;
+        if (delta) {
+          scanLinePadding = 4 - delta;
+        }
+      }
+        break;
+      case 24: {
+        //1 pixel = 3 bytes
+        int delta = (3 * width()) % 4;
+        if (delta) {
+          scanLinePadding = 4 - delta;
+        }
+      }
+        break;
+    }
+
     int dataIndex = 0;
     for(int y = height() - 1; y >= 0; --y) {
       const auto y_offset = y * width();
@@ -86,7 +119,10 @@ namespace upanui {
             const uint8_t code = pixelData[dataIndex / 2];
             const uint32_t colorCode = dataIndex & 0x1 ? code & 0xF : (code >> 4) & 0xF;
             ++dataIndex;
-            *p = (colorTable[colorCode] | 0xFF000000);
+//            if (colorTable[colorCode] != 0x000000 && colorTable[colorCode] != 0xFFFFFF)
+//              *p = (colorTable[colorCode] & 0x00FFFFFF);
+//            else
+              *p = (colorTable[colorCode] | 0xFF000000);
           }
             break;
 
@@ -112,6 +148,7 @@ namespace upanui {
             throw upan::exception(XLOC, "unsupported BMP resolution: %d", _infoHeader._bitsPerPixel);
         }
       }
+      dataIndex += scanLinePadding;
     }
   }
 }

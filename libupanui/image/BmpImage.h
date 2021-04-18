@@ -33,7 +33,7 @@ namespace upanui {
         uint32_t _fileSize;
         uint32_t _reserved;
         uint32_t _dataOffset;
-        void DebugPrint() {
+        void DebugPrint() const {
           printf("\n Signature: %c%c, FileSize: %d, DataOffset: %d", _signature[0], _signature[1], _fileSize, _dataOffset);
         }
       } PACKED Header;
@@ -50,7 +50,7 @@ namespace upanui {
         uint32_t _yPixelsPerM;
         uint32_t _colorsUsed;
         uint32_t _importantColors;
-        void DebugPrint() {
+        void DebugPrint() const {
           printf("\n InfoHeaderSize: %d, Width: %d, Height: %d, Planes: %d, BitsPerPixel: %d"
                  "\n Compression: %d, CompressedImgSize: %d"
                  "\n xPixelsPerM: %d, yPixelsPerM: %d "
@@ -75,6 +75,7 @@ namespace upanui {
         return const_cast<BmpImage*>(this)->_imageBuffer.get();
       }
 
+      void DebugPrint() const;
     private:
       //assuming 4 bytes per pixel
       upan::uniq_ptr<uint32_t> _imageBuffer;
