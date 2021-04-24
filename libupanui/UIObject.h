@@ -23,6 +23,9 @@
 namespace upanui {
     class UIObject {
     public:
+      UIObject() {}
+      UIObject(const UIObject&) = delete;
+      UIObject& operator=(const UIObject&) = delete;
       virtual ~UIObject() {}
 
       virtual uint32_t width() const = 0;

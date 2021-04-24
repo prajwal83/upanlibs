@@ -22,7 +22,11 @@
 
 namespace upanui {
   BmpImage::BmpImage(const void* imageData) : _imageBuffer(nullptr) {
-    Load(imageData);
+    Load(imageData, 0);
+  }
+
+  BmpImage::BmpImage(const void* imageData, const uint32_t transparentColor) : _imageBuffer(nullptr) {
+    Load(imageData, transparentColor);
   }
 
   BmpImage::~BmpImage() noexcept {
@@ -34,7 +38,7 @@ namespace upanui {
     _infoHeader.DebugPrint();
   }
 
-  void BmpImage::Load(const void* imageData) {
+  void BmpImage::Load(const void* imageData, uint32_t transparentColor) {
     if (imageData == nullptr) {
       throw upan::exception(XLOC, "imageData can't be null");
     }
@@ -109,6 +113,10 @@ namespace upanui {
         break;
     }
 
+    auto applyTransparencyFilter = [transparentColor](const uint32_t color) -> uint32_t  {
+      return color == transparentColor ? color & 0x00FFFFFF : color | 0xFF000000;
+    };
+
     int dataIndex = 0;
     for(int y = height() - 1; y >= 0; --y) {
       const auto y_offset = y * width();
@@ -118,18 +126,15 @@ namespace upanui {
           case 4: {
             const uint8_t code = pixelData[dataIndex / 2];
             const uint32_t colorCode = dataIndex & 0x1 ? code & 0xF : (code >> 4) & 0xF;
+            *p = applyTransparencyFilter(colorTable[colorCode]);
             ++dataIndex;
-//            if (colorTable[colorCode] != 0x000000 && colorTable[colorCode] != 0xFFFFFF)
-//              *p = (colorTable[colorCode] & 0x00FFFFFF);
-//            else
-              *p = (colorTable[colorCode] | 0xFF000000);
           }
             break;
 
           case 8: {
             const auto colorCode = pixelData[dataIndex] & 0xFF;
+            *p = applyTransparencyFilter(colorTable[colorCode]);
             ++dataIndex;
-            *p = (colorTable[colorCode] | 0xFF000000);
           }
             break;
 
@@ -137,10 +142,8 @@ namespace upanui {
             const uint32_t b = pixelData[dataIndex++] & 0xFF;
             const uint32_t g = pixelData[dataIndex++] & 0xFF;
             const uint32_t r = pixelData[dataIndex++] & 0xFF;
-            *p = ((r << 16) & 0x00FF0000)
-                | ((g << 8) & 0x0000FF00)
-                | (b & 0x000000FF)
-                | 0xFF000000;
+            const uint32_t color = ((r << 16) & 0x00FF0000) | ((g << 8) & 0x0000FF00) | (b & 0x000000FF);
+            *p = applyTransparencyFilter(color);
           }
             break;
 

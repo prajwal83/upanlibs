@@ -24,10 +24,11 @@ namespace upanui {
     class BmpImage : public Image {
     public:
       BmpImage(const void* imageData);
+      BmpImage(const void* imageData, const uint32_t transparentColor);
       ~BmpImage();
 
     private:
-      void Load(const void* imageData);
+      void Load(const void* imageData, const uint32_t transparentColor);
       typedef struct {
         uint8_t _signature[2];
         uint32_t _fileSize;
