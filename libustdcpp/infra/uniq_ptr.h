@@ -29,12 +29,9 @@ template <typename T>
 class uniq_ptr
 {
   private:
-    uniq_ptr(const uniq_ptr&) = delete;
-    uniq_ptr& operator=(const uniq_ptr&) = delete;
-    
     void destroy()
     {
-      if(_owner)
+      if(_owner && _ptr != nullptr)
       {
         delete _ptr;
         _ptr = nullptr;
@@ -45,6 +42,25 @@ class uniq_ptr
     uniq_ptr(T* ptr) : _ptr(ptr), _owner(true)
     {
     }
+
+    uniq_ptr() : _ptr(nullptr), _owner(true) {
+
+    }
+
+    uniq_ptr(uniq_ptr&& r) : _ptr(r.get()), _owner(true) {
+      r.disown();
+    }
+
+    uniq_ptr& operator=(uniq_ptr&& r) noexcept {
+      destroy();
+      _ptr = r.get();
+      _owner = true;
+      r.disown();
+      return *this;
+    }
+
+    uniq_ptr(const uniq_ptr&) = delete;
+    uniq_ptr& operator=(const uniq_ptr&) = delete;
 
     ~uniq_ptr()
     {
