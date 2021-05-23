@@ -90,11 +90,11 @@ unsigned long long strtoull(const char * __restrict str, char ** __restrict endp
 
 /******************/
 extern void SysUtil_Reboot() ;
-extern void SysProcess_Sleep(unsigned milisec) ;
 
 #define reboot() SysUtil_Reboot()
-#define sleep(s) SysProcess_Sleep((s) * 1000) ;
 
+void sleep(uint32_t s);
+void sleepms(uint32_t ms);
 void exit(int rv) ;
 /******************/
 

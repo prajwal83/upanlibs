@@ -17,7 +17,7 @@
  */
 #pragma once
 #include <ctype.h>
-#include "stdint.h"
+#include <stdint.h>
 
 #define Display_CURSOR_CUR -1
 #define Display_WHITE_ON_BLACK 0x07
@@ -33,20 +33,29 @@ typedef struct {
   uint8_t	_attr;
 } MChar;
 
+typedef struct {
+  uint32_t _pitch;
+  uint32_t _width;
+  uint32_t _height;
+  uint32_t _bpp;
+} FramebufferInfo;
+
 extern void	SysDisplay_MoveCursor(int n) ;
 extern void	SysDisplay_ClearLine(int pos) ;
 extern void	SysDisplay_SetCursor(int pos, bool bUpdateCursorOnScreen) ;
 extern int	SysDisplay_GetCursor() ;
-extern void SysDisplay_GetSize(unsigned* retMaxRows, unsigned* retMaxCols);
+extern void SysDisplay_GetConsoleSize(uint32_t*, uint32_t*);
+extern void SysDisplay_GetFramebufferInfo(FramebufferInfo*);
 
 #define movcursor(n)		SysDisplay_MoveCursor(n)
 #define clrline(pos)		SysDisplay_ClearLine(pos)
 #define set_cursor(pos)		SysDisplay_SetCursor(pos, true)
 #define set_cursor_val(pos)	SysDisplay_SetCursor(pos, false)
 #define get_cursor()		SysDisplay_GetCursor()
-#define console_size(mr, mc) SysDisplay_GetSize(mr, mc)
+#define console_size(mr, mc) SysDisplay_GetConsoleSize(mr, mc)
 
 void showprogress(int startCur, const char* msg, unsigned progNum) ;
+void get_framebuffer_info(FramebufferInfo* framebufferInfo);
 
 #if defined __cplusplus
 }

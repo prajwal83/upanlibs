@@ -120,7 +120,7 @@ namespace upanui {
     int dataIndex = 0;
     for(int y = height() - 1; y >= 0; --y) {
       const auto y_offset = y * width();
-      for(int x = 0; x < width(); ++x) {
+      for(uint32_t x = 0; x < width(); ++x) {
         auto p = (uint32_t*)(_imageBuffer.get() + y_offset + x);
         switch(_infoHeader._bitsPerPixel) {
           case 4: {

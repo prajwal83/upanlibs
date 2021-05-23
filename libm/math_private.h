@@ -229,6 +229,7 @@ extern float __kernel_cosf __P((float,float));
 extern float __kernel_tanf __P((float,float,int));
 extern int   __kernel_rem_pio2f __P((float*,float*,int,int,int,const int*));
 
+extern int finite(double x);
 #define _POSIX_MODE
 
 #endif /* _MATH_PRIVATE_H_ */

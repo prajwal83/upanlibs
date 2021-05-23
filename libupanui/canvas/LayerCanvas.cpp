@@ -16,22 +16,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/
  */
 
-#include "algo/stringalgo.h"
-#include "algo/algorithm.h"
-#include "mem/MemPool.h"
-#include "mem/newalloc.h"
-#include "infra/exception.h"
-#include "infra/uniq_ptr.h"
-#include "infra/try.h"
-#include "infra/option.h"
-#include "infra/result.h"
-#include "ds/vector.h"
-#include "ds/pair.h"
-#include "ds/list.h"
-#include "ds/_tree.h"
-#include "ds/Stack.h"
-#include "ds/map.h"
-#include "ds/set.h"
-#include "ds/queue.h"
-#include "ds/BTree.h"
-#include "ds/ustring.h"
+#include <LayerCanvas.h>
+#include <cdisplay.h>
+
+namespace upanui {
+  LayerCanvas::LayerCanvas() {
+    FramebufferInfo fb;
+    get_framebuffer_info(&fb);
+
+    _width = fb._width;
+    _height = fb._height;
+
+    _frameBuffer.reset(new uint32_t[_width * _height]);
+  }
+}

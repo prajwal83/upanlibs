@@ -16,22 +16,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/
  */
 
-#include "algo/stringalgo.h"
-#include "algo/algorithm.h"
-#include "mem/MemPool.h"
-#include "mem/newalloc.h"
-#include "infra/exception.h"
-#include "infra/uniq_ptr.h"
-#include "infra/try.h"
-#include "infra/option.h"
-#include "infra/result.h"
-#include "ds/vector.h"
-#include "ds/pair.h"
-#include "ds/list.h"
-#include "ds/_tree.h"
-#include "ds/Stack.h"
-#include "ds/map.h"
-#include "ds/set.h"
-#include "ds/queue.h"
-#include "ds/BTree.h"
-#include "ds/ustring.h"
+#include <stdint.h>
+#include <stdlib.h>
+#include <syscalldefs.h>
+
+static void thread_entry_caller(thread_entry_func_p tmain, void* arg) {
+  tmain(arg);
+  exit(0);
+}
+
+int exect(thread_entry_func_p entryPoint, void* arg) {
+  return SysProcess_ThreadExec((uint32_t)thread_entry_caller, (uint32_t)entryPoint, arg);
+}
+
+int childalive(int pid) {
+  return SysProcess_IsChildAlive(pid) ;
+}
+
+int isprocessalive(int pid) {
+  return SysProcess_IsProcessAlive(pid);
+}
+
+void sleep(uint32_t seconds) {
+  SysProcess_Sleep(seconds * 1000);
+}
+
+void sleepms(uint32_t milliseconds) {
+  SysProcess_Sleep(milliseconds);
+}
+
+int getpid() {
+  return SysProcess_GetPID();
+}

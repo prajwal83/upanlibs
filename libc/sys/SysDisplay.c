@@ -199,7 +199,7 @@ void SysDisplay_RawCharacterArea(const MChar* src, uint32_t rows, uint32_t cols,
   __asm__ __volatile__("pop %eax") ;
 }
 
-void SysDisplay_GetSize(unsigned* retMaxRows, unsigned* retMaxCols)
+void SysDisplay_GetConsoleSize(unsigned* retMaxRows, unsigned* retMaxCols)
 {
 	__volatile__ int iRetStatus ;
 
@@ -214,8 +214,28 @@ void SysDisplay_GetSize(unsigned* retMaxRows, unsigned* retMaxCols)
 
 	__asm__ __volatile__("pushl %0" : : "rm"(retMaxCols)) ;
 	__asm__ __volatile__("pushl %0" : : "rm"(retMaxRows)) ;
-	DO_SYS_CALL(SYS_CALL_DISPLAY_SIZE) ;
+	DO_SYS_CALL(SYS_CALL_DISPLAY_CONSOLE_SIZE) ;
 
 	__asm__ __volatile__("movl %%eax, %0" : "=m"(iRetStatus) : ) ;
 	__asm__ __volatile__("pop %eax") ;
+}
+
+void SysDisplay_GetFramebufferInfo(FramebufferInfo* framebufferInfo) {
+  __volatile__ int iRetStatus ;
+
+  __asm__ __volatile__("push %eax") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+
+  __asm__ __volatile__("pushl %0" : : "rm"(framebufferInfo)) ;
+  DO_SYS_CALL(SYS_CALL_DISPLAY_FRAMEBUFFER_INFO) ;
+
+  __asm__ __volatile__("movl %%eax, %0" : "=m"(iRetStatus) : ) ;
+  __asm__ __volatile__("pop %eax") ;
 }

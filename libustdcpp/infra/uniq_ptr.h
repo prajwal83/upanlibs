@@ -111,10 +111,11 @@ class uniq_ptr<T[]>
     }
 
   public:
-    uniq_ptr(T* ptr) : _ptr(ptr), _owner(true)
-    {
+    uniq_ptr(T* ptr) : _ptr(ptr), _owner(true) {
     }
 
+    uniq_ptr() : _ptr(nullptr), _owner(true) {
+    }
     ~uniq_ptr()
     {
       destroy();

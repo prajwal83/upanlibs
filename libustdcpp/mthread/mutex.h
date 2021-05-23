@@ -16,22 +16,42 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/
  */
 
-#include "algo/stringalgo.h"
-#include "algo/algorithm.h"
-#include "mem/MemPool.h"
-#include "mem/newalloc.h"
-#include "infra/exception.h"
-#include "infra/uniq_ptr.h"
-#include "infra/try.h"
-#include "infra/option.h"
-#include "infra/result.h"
-#include "ds/vector.h"
-#include "ds/pair.h"
-#include "ds/list.h"
-#include "ds/_tree.h"
-#include "ds/Stack.h"
-#include "ds/map.h"
-#include "ds/set.h"
-#include "ds/queue.h"
-#include "ds/BTree.h"
-#include "ds/ustring.h"
+#pragma once
+
+#include <stdint.h>
+
+class Testatomic;
+
+namespace upan{
+    class mutex {
+      private:
+      __volatile__ uint32_t _lock;
+      __volatile__ int _processID;
+
+      static const int FREE_MUTEX = -999;
+    public:
+      mutex();
+      ~mutex();
+
+      bool lock(bool bBlock = true);
+      bool unlock();
+      bool unlock(int pid);
+
+    private:
+      void acquire();
+      void release();
+      friend class ::Testatomic;
+    };
+
+    class mutex_guard {
+    public:
+      mutex_guard(mutex& m) : _m(m) {
+        _m.lock();
+      }
+      ~mutex_guard() {
+        _m.unlock();
+      }
+    private:
+      mutex& _m;
+    };
+}

@@ -95,7 +95,7 @@ class list
     {
       if(!_first)
         return nullptr;
-        return _first->prev();
+      return _first->prev();
     }
     bool delete_node(node* cur);
   public:
@@ -240,18 +240,16 @@ list<T>::~list()
   clear();
 }
 
+
 template <typename T>
 void list<T>::push_back(const T& value)
 {
   list<T>::node* n = new list<T>::node(value);
-  if(empty())
-  {
+  if(empty()) {
+    n->next(n);
+    n->prev(n);
     _first = n;
-    _first->next(n);
-    _first->prev(n);
-  }
-  else
-  {
+  } else {
     auto l = last();
     l->next(n);
     n->prev(l);
@@ -381,7 +379,6 @@ const T& list<T>::back() const
 template <typename T>
 typename list<T>::iterator list<T>::insert(iterator pos, const T& v)
 {
-  ++_size;
   if(pos == end())
   {
     push_back(v);
@@ -392,6 +389,7 @@ typename list<T>::iterator list<T>::insert(iterator pos, const T& v)
     push_front(v);
     return begin();
   }
+  ++_size;
   node* new_node = new node(v);
   node* cur = pos._node;
   cur->prev()->next(new_node);
@@ -492,8 +490,10 @@ template <typename T>
 void list<T>::clear()
 {
   iterator it = begin();
-  for(; it != end(); ++it)
-    delete it._node;
+  while(it != end()) {
+    auto dit = it++;
+    delete dit._node;
+  }
   _size = 0;
   _first = nullptr;
 }

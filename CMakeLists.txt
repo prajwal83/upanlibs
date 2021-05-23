@@ -59,6 +59,7 @@ include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/ds)
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/algo)
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/infra)
 include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/mem)
+include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/mthread)
 
 #include_directories(${PROJECT_SOURCE_DIR}/libsfn)
 #include_directories(${PROJECT_SOURCE_DIR}/libsfn/freetype2/devel)
@@ -71,6 +72,7 @@ include_directories(${PROJECT_SOURCE_DIR}/libusfn/zlib)
 
 include_directories(${PROJECT_SOURCE_DIR}/libupanui)
 include_directories(${PROJECT_SOURCE_DIR}/libupanui/image)
+include_directories(${PROJECT_SOURCE_DIR}/libupanui/canvas)
 
 #LIBC
 execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libc -name '*.c' | grep -v CMakeFile | grep -v './libc/sys/'" OUTPUT_VARIABLE LIBC_SRC)

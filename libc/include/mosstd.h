@@ -49,11 +49,15 @@ typedef struct
 	int iUserID ;
 } PS ;
 
+typedef void (*thread_entry_func_p)(void*);
+
 int exec(const char* szFileName, ...) ;
-int execv(const char* szFileName, int iNoOfArgs, char *const szArgList[]) ;
-int execvp(const char* szFileName, char *const szArgList[]) ;
-int exect(void* entryPoint, void* arg);
+int execv(const char* szFileName, int iNoOfArgs, const char *const szArgList[]) ;
+int execvp(const char* szFileName, const char *const szArgList[]) ;
+int exect(thread_entry_func_p entryPoint, void* arg);
 int childalive(int pid) ;
+int isprocessalive(int pid);
+int getpid();
 
 extern void SysProcess_WaitPID(int iProcessID) ;
 extern void SysProcess_Exit(int iExitStatus) ;
@@ -63,7 +67,6 @@ extern void SysProcess_FreeProcListMem(PS* pProcList, unsigned uiListSize) ;
 
 #define waitpid(pid) SysProcess_WaitPID(pid)
 #define _exit(exit_status) SysProcess_Exit(exit_status)
-#define getpid() SysProcess_GetPID()
 #define getpslist(pslist, size) SysProcess_GetProcList(pslist, size)
 #define freepslist(pslist, size) SysProcess_FreeProcListMem(pslist, size)
 

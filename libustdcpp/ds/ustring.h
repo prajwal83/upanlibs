@@ -18,13 +18,9 @@
 #ifndef _UPAN_STRING_H_
 #define _UPAN_STRING_H_
 
-#ifdef __LOCAL_TEST__
-#include "/usr/include/string.h"
-#else
 #include <string.h>
-#endif
-
 #include <stdio.h>
+#include <stdint.h>
 
 namespace upan {
 

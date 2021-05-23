@@ -21,7 +21,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 
-int SysProcess_Exec(const char* szFileName, int iNoOfArgs, char *const szArgList[])
+int SysProcess_Exec(const char* szFileName, int iNoOfArgs, const char *const szArgList[])
 {
 	__volatile__ int iProcessID ;
 
@@ -102,6 +102,27 @@ int SysProcess_IsChildAlive(int iProcessID)
 	__asm__ __volatile__("pop %eax") ;
 
 	return iRetStatus ;
+}
+
+int SysProcess_IsProcessAlive(int iProcessID) {
+  __volatile__ int iRetStatus ;
+
+  __asm__ __volatile__("push %eax") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+
+  __asm__ __volatile__("pushl %0" : : "rm"(iProcessID)) ;
+  DO_SYS_CALL(SYS_CALL_PROCESS_ALIVE) ;
+  __asm__ __volatile__("movl %%eax, %0" : "=m"(iRetStatus) : ) ;
+  __asm__ __volatile__("pop %eax") ;
+
+  return iRetStatus ;
 }
 
 void SysProcess_Exit(int iExitStatus)
@@ -242,40 +263,6 @@ void SysProcess_FreeProcListMem(PS* pProcList, unsigned uiListSize)
 	__asm__ __volatile__("pop %eax") ;
 }
 
-void SysProcess_DisableTaskSwitch()
-{
-	__asm__ __volatile__("push %eax") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-
-	DO_SYS_CALL(SYS_CALL_DISABLE_TASK_SWITCH) ;
-	__asm__ __volatile__("pop %eax") ;
-}
-
-void SysProcess_EnableTaskSwitch()
-{
-	__asm__ __volatile__("push %eax") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-	__asm__ __volatile__("pushl $0x20") ;
-
-	DO_SYS_CALL(SYS_CALL_ENABLE_TASK_SWITCH) ;
-	__asm__ __volatile__("pop %eax") ;
-}
-
 int exec(const char* szFileName, ...)
 {
 	__volatile__ int iProcessID ;
@@ -295,25 +282,25 @@ int exec(const char* szFileName, ...)
 		for(i = 0; i < argc; i++)
 		{
 			argv[i] = (char*)malloc(strlen((char*)(*(ref + i))) + 1) ;
-			strcpy(argv[i], (char*)(*(ref + i))) ;
+			strcpy(argv[i], (const char*)(*(ref + i))) ;
 		}
 	}
 
-	iProcessID = SysProcess_Exec(szFileName, argc, argv) ;
+	iProcessID = SysProcess_Exec(szFileName, argc, (const char**const)argv) ;
 
 	for(i = 0; i < argc; i++)
-		free(argv[i]) ;
+		free((void*)argv[i]) ;
 	free(argv) ;
 
 	return iProcessID ;
 }
 
-int execv(const char* szFileName, int iNoOfArgs, char *const szArgList[])
+int execv(const char* szFileName, int iNoOfArgs, const char *const szArgList[])
 {
 	return SysProcess_Exec(szFileName, iNoOfArgs, szArgList) ;
 }
 
-int execvp(const char* szFileName, char *const szArgList[])
+int execvp(const char* szFileName, const char *const szArgList[])
 {
 	__volatile__ int argc ;
 	__volatile__ const int max_args = 256 ;
@@ -329,20 +316,4 @@ int execvp(const char* szFileName, char *const szArgList[])
 	}
 
 	return SysProcess_Exec(szFileName, argc, szArgList) ;
-}
-
-typedef void thread_entry_func(void*);
-
-static void thread_entry_caller(thread_entry_func tmain, void* arg) {
-  tmain(arg);
-  exit(0);
-}
-
-int exect(void* entryPoint, void* arg) {
-  return SysProcess_ThreadExec((uint32_t)thread_entry_caller, (uint32_t)entryPoint, arg);
-}
-
-int childalive(int pid)
-{
-	return SysProcess_IsChildAlive(pid) ;
 }

@@ -27,13 +27,18 @@ BTree::BTree(int iMaxElements) :
 {
 	m_pRootNode = new BTreeNode() ;
 	// No Limit
-	m_iTotalElements = 0 ;
-	m_pDestroyKeyValue = NULL ;
+	m_iTotalElements = 0;
+	m_pDestroyKeyValue = NULL;
 	
 	if(iMaxElements < 1)
-		iMaxElements = 1024 ;
+		iMaxElements = 1024;
 
-	m_pElementMemPool = &MemPool<BTreeElement>::CreateMemPool(iMaxElements) ;
+	int iChunkSize = iMaxElements;
+	if (iMaxElements > iChunkSize) {
+	  iChunkSize = iMaxElements;
+	}
+
+	m_pElementMemPool = &MemPool<BTreeElement>::CreateMemPool(iMaxElements, iChunkSize) ;
 }
 
 BTree::~BTree()
@@ -117,21 +122,18 @@ bool BTree::ValidateTreeSize()
 
 bool BTree::Insert(BTreeKey* pKey, BTreeValue* pValue)
 {
-	if(!ValidateTreeSize())
+  if(!ValidateTreeSize())
 	{
 		printf("\n BTree Size Limit: %d reached\n", m_iMaxElements) ;
 		return false ;
 	}
-
 	BTreeElement* pElement = CreateElement(pKey, pValue) ;
-
 	BTreeNode* pNode = m_pRootNode ;
 
 	while(!pNode->IsLeaf())
 		pNode = pNode->GetInsertionNode(*pKey) ;
 
-	if(InsertElement(pNode, pElement))
-	{
+	if(InsertElement(pNode, pElement)) {
 		m_iTotalElements++ ;
 		return true ;
 	}
@@ -240,7 +242,6 @@ bool BTree::Rebalance(BTreeNode* pNode)
 	}
 
 	BTreeElement* pParentElement = parent[iParentIndex] ;
-
 	if(bLeftChild)
 	{
 		BTreeNode& leftNode = *pNode ;
@@ -254,9 +255,11 @@ bool BTree::Rebalance(BTreeNode* pNode)
 
 			pRightElement->SetRightNode(pRightElement->GetLeftNode()) ;
 			pRightElement->SetLeftNode(leftNode[ leftNode.GetNoOfElements() - 1 ]->GetRightNode()) ;
-			leftNode.SetNoOfElements(leftNode.GetNoOfElements() + 1) ;	
+			leftNode.SetNoOfElements(leftNode.GetNoOfElements() + 1) ;
 
-			pRightElement->GetRightNode()->SetParentNode(&leftNode) ;
+      if (pRightElement->GetRightNode()) {
+        pRightElement->GetRightNode()->SetParentNode(&leftNode);
+      }
 			
 			return true ;
 		}
@@ -266,15 +269,18 @@ bool BTree::Rebalance(BTreeNode* pNode)
 			for(int i = leftNode.GetNoOfElements() + 1, j = 0; j < rightNode.GetNoOfElements(); j++, i++)
 			{
 				leftNode[i] = rightNode[j] ;
-
-				rightNode[j]->GetLeftNode()->SetParentNode(&leftNode) ;
-				if(j == rightNode.GetNoOfElements() - 1)
-					rightNode[j]->GetRightNode()->SetParentNode(&leftNode) ;
+        if (rightNode[j]->GetLeftNode()) {
+          rightNode[j]->GetLeftNode()->SetParentNode(&leftNode) ;
+        }
+				if(j == rightNode.GetNoOfElements() - 1) {
+          if(rightNode[j]->GetRightNode()) {
+            rightNode[j]->GetRightNode()->SetParentNode(&leftNode);
+          }
+        }
 			}
 
 			pParentElement->SetLeftNode(leftNode[ leftNode.GetNoOfElements() - 1 ]->GetRightNode()) ;
 			pParentElement->SetRightNode(leftNode[ leftNode.GetNoOfElements() + 1 ]->GetLeftNode()) ;
-
 			leftNode.SetNoOfElements(leftNode.GetNoOfElements() + rightNode.GetNoOfElements() + 1 ) ;
 
 			for(int i = iParentIndex; i < parent.GetNoOfElements() - 1; i++)
@@ -313,7 +319,9 @@ bool BTree::Rebalance(BTreeNode* pNode)
 			pLeftElement->SetRightNode(rightNode[1]->GetLeftNode()) ;
 			rightNode.SetNoOfElements(rightNode.GetNoOfElements() + 1) ;	
 
-			pLeftElement->GetLeftNode()->SetParentNode(&rightNode) ;
+			if (pLeftElement->GetLeftNode()) {
+        pLeftElement->GetLeftNode()->SetParentNode(&rightNode);
+      }
 
 			return true ;
 		}
@@ -323,10 +331,14 @@ bool BTree::Rebalance(BTreeNode* pNode)
 			for(int i = leftNode.GetNoOfElements() + 1, j = 0; j < rightNode.GetNoOfElements(); j++, i++)
 			{
 				leftNode[i] = rightNode[j] ;
-
-				rightNode[j]->GetLeftNode()->SetParentNode(&leftNode) ;
-				if(j == rightNode.GetNoOfElements() - 1)
-					rightNode[j]->GetRightNode()->SetParentNode(&leftNode) ;
+        if (rightNode[j]->GetLeftNode()) {
+          rightNode[j]->GetLeftNode()->SetParentNode(&leftNode);
+        }
+				if(j == rightNode.GetNoOfElements() - 1) {
+				  if (rightNode[j]->GetRightNode()) {
+            rightNode[j]->GetRightNode()->SetParentNode(&leftNode);
+          }
+        }
 			}
 
 			pParentElement->SetLeftNode(leftNode[ leftNode.GetNoOfElements() - 1 ]->GetRightNode()) ;
@@ -412,15 +424,13 @@ bool BTree::Delete(const BTreeKey& rKey)
 			child = Lowest(pElement->GetRightNode()) ;
 			m_bLeftDeletion = true ;
 		}
-		
+
 		if(child.first == NULL || child.second == NULL)
 			return false ;
 
 		SwapElement(pElement, child.second) ;
-
 		pNodeForDelete = child.first ;
 	}
-
 	return DeleteFromLeaf(pNodeForDelete, rKey) ;
 }
 
@@ -442,8 +452,9 @@ bool BTree::InsertElement(BTreeNode* pNode, BTreeElement* pNewElement)
 
 	BTreeNode& node = *pNode ;
 
-	if(node.GetNoOfElements() < m_iMaxElementsPerNode)
-		return node.Insert(pNewElement) >= 0 ;
+	if(node.GetNoOfElements() < m_iMaxElementsPerNode) {
+    return node.Insert(pNewElement) >= 0;
+  }
 
 	// Node is full, we need to split the node
 	BTreeNode* pNewNode ;
@@ -458,7 +469,7 @@ bool BTree::InsertElement(BTreeNode* pNode, BTreeElement* pNewElement)
 		pNewNode->SetParentNode(pRootNode) ;		
 	}
 
-	return InsertElement(node.GetParentNode(), pMidElement) ;
+  return InsertElement(node.GetParentNode(), pMidElement) ;
 }
 
 BTreeNodeElement BTree::FindElement(BTreeNode* pNode, const BTreeKey& rKey)
@@ -593,9 +604,8 @@ int BTreeNode::Insert(BTreeElement* pElement)
 		return 0 ;
 	}
 
-	const BTreeKey& lastKey = m_pElementList[m_iNoOfElements - 1]->GetKey() ;
+  const BTreeKey& lastKey = m_pElementList[m_iNoOfElements - 1]->GetKey() ;
 	const BTreeKey& inKey = pElement->GetKey() ;
-
 	if(lastKey < inKey || lastKey == inKey)
 	{
 		m_pElementList[ m_iNoOfElements ] = pElement ;

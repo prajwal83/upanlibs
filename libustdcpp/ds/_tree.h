@@ -22,7 +22,7 @@
 #include <pair.h>
 #include <algorithm.h>
 
-class TestSuite;
+class Testmap;
 
 namespace upan {
 
@@ -263,7 +263,7 @@ class _tree
           return _const_tree_iterator(_base_tree_iterator::_node);
         };
       friend class _tree;
-      friend class ::TestSuite;
+      friend class ::Testmap;
     };
 
     class _const_tree_iterator : public _base_tree_iterator
@@ -282,7 +282,7 @@ class _tree
         _const_tree_iterator operator--(int) { return this->post_dec(); }
 
       friend class _tree;
-      friend class ::TestSuite;
+      friend class ::Testmap;
     };
 
     node* first_node() const

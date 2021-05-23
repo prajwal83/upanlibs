@@ -50,7 +50,8 @@ typedef enum
 		SYS_CALL_DISPLAY_GET_CURSOR,
 		SYS_CALL_DISPLAY_RAW_CHAR,
     SYS_CALL_DISPLAY_RAW_CHAR_AREA,
-    SYS_CALL_DISPLAY_SIZE,
+    SYS_CALL_DISPLAY_CONSOLE_SIZE,
+    SYS_CALL_DISPLAY_FRAMEBUFFER_INFO,
 	SYS_CALL_DISPLAY_END,
 	
 	SYS_CALL_FILE_START = 200,
@@ -93,9 +94,8 @@ typedef enum
 		SYS_CALL_PROCESS_SET_ENV,
 		SYS_CALL_PROCESS_GET_PS_LIST,
 		SYS_CALL_PROCESS_FREE_PS_LIST,
-		SYS_CALL_DISABLE_TASK_SWITCH,
-		SYS_CALL_ENABLE_TASK_SWITCH,
 		SYS_CALL_PROCESS_CHILD_ALIVE,
+		SYS_CALL_PROCESS_ALIVE,
 	SYS_CALL_PROC_END,
 
 	SYS_CALL_KB_START = 800,
@@ -161,7 +161,7 @@ void SysKB_GetWait(int* ch);
 int SysMemory_Alloc(void** addr, unsigned uiSizeInBytes);
 int SysMemory_Free(void* uiAddress);
 int SysMemory_GetAllocSize(void* uiAddress, int* size);
-int SysProcess_Exec(const char* szFileName, int iNoOfArgs, char *const szArgList[]);
+int SysProcess_Exec(const char* szFileName, int iNoOfArgs, const char *const szArgList[]);
 int SysProcess_ThreadExec(uint32_t threadCaller, uint32_t entryAddress, void* arg);
 void SysProcess_WaitPID(int iProcessID);
 void SysProcess_Exit(int iExitStatus);
@@ -171,14 +171,15 @@ const char* SysProcess_GetEnv(const char* szVar);
 int SysProcess_SetEnv(const char* szVar, const char* szVal);
 int SysProcess_GetProcList(PS** pProcList, unsigned* uiListSize);
 void SysProcess_FreeProcListMem(PS* pProcList, unsigned uiListSize);
-void SysProcess_DisableTaskSwitch();
-void SysProcess_EnableTaskSwitch();
 
 void SysUtil_GetDateTime(RTCTime* pRTCTime);
 void SysUtil_Reboot();
 
 int SysUtil_GetTimeOfDay(struct timeval* pTV);
 uint32_t SysUtil_GetTimeSinceBoot();
+
+int SysProcess_IsProcessAlive(int iProcessID);
+int SysProcess_IsChildAlive(int iProcessID);
 
 #if defined __cplusplus
 }

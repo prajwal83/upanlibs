@@ -37,13 +37,13 @@ class MemPool
 
 		unsigned m_uiNoOfChunks ;
 
-		unsigned* m_pAllocAddressArray ;
+		uint8_t** m_pAllocAddressArray ;
 
 	private:
 		MemPool(unsigned uiSize, unsigned uiChunkSize) : MAX_ELEMENTS(uiSize), CHUNK_SIZE(uiChunkSize), MAX_CHUNKS(MAX_ELEMENTS/CHUNK_SIZE), m_mStackMemPool(uiSize)
 		{
 			m_uiNoOfChunks = 0 ;
-			m_pAllocAddressArray = new unsigned[ MAX_CHUNKS ] ;
+			m_pAllocAddressArray = new uint8_t*[ MAX_CHUNKS ] ;
 		}
 
 		bool AllocateChunk()
@@ -52,7 +52,7 @@ class MemPool
 				return false ;
 
 			int iTotalSize = CHUNK_SIZE * sizeof(T) ;
-			unsigned uiAddress = (unsigned) malloc(iTotalSize);
+			uint8_t* uiAddress = (uint8_t*) malloc(iTotalSize);
 
 			for(unsigned i = 0; i < CHUNK_SIZE; i++)
 			{
@@ -73,12 +73,11 @@ class MemPool
 
 		bool IsMemFromPool(T* pAddress)
 		{
-			unsigned uiAddress = (unsigned)pAddress ;
-			
+      uint8_t* uiAddress = (uint8_t*)pAddress ;
 			for(unsigned i = 0; i < m_uiNoOfChunks; i++)
 			{
-				unsigned uiStart = m_pAllocAddressArray[ i ] ;
-				unsigned uiEnd = uiStart + CHUNK_SIZE * sizeof(T) ;
+        uint8_t* uiStart = m_pAllocAddressArray[ i ] ;
+        uint8_t* uiEnd = uiStart + CHUNK_SIZE * sizeof(T) ;
 				if(uiAddress >= uiStart && uiAddress < uiEnd)
 				{
 					if(((uiAddress - uiStart) % sizeof(T)) == 0)
@@ -91,7 +90,7 @@ class MemPool
 
 	public:
 		// Factory
-		static MemPool<T>& CreateMemPool(unsigned uiSize, unsigned uiChunkSize = 1024)
+		static MemPool<T>& CreateMemPool(unsigned uiSize, unsigned uiChunkSize)
 		{
 			if((uiSize % uiChunkSize) != 0)
         throw upan::exception(XLOC, "\n MemPool Creation Failure. MemPool Size: %u is not a multiple of Chunk Size: %u", uiSize, uiChunkSize);
@@ -132,11 +131,9 @@ class MemPool
 					printf("\n MemPool is Full! which can happen only if the Pool Memory is double deallocated") ;
 					return false ;
 				}
-
 				m_mStackMemPool.Push(pAddress) ;
 				return true ;
 			}
-
 			delete pAddress ;
 			return true ;
 		}

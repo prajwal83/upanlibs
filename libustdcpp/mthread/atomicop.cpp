@@ -16,22 +16,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/
  */
 
-#include "algo/stringalgo.h"
-#include "algo/algorithm.h"
-#include "mem/MemPool.h"
-#include "mem/newalloc.h"
-#include "infra/exception.h"
-#include "infra/uniq_ptr.h"
-#include "infra/try.h"
-#include "infra/option.h"
-#include "infra/result.h"
-#include "ds/vector.h"
-#include "ds/pair.h"
-#include "ds/list.h"
-#include "ds/_tree.h"
-#include "ds/Stack.h"
-#include "ds/map.h"
-#include "ds/set.h"
-#include "ds/queue.h"
-#include "ds/BTree.h"
-#include "ds/ustring.h"
+#include <atomicop.h>
+
+namespace upan {
+  uint32_t atomic::swap(__volatile__ uint32_t &iLock, uint32_t val) {
+    __asm__ __volatile__ ("lock xchgl %0, %1"
+    : "=r" ( val )
+    : "m"( iLock ), "0" (val)
+    : "memory" );
+
+    return val;
+  }
+
+  void atomic::add(__volatile__ uint32_t &var, uint32_t val) {
+    __asm__ __volatile__ ("lock xaddl %0, %1"
+    : "=r"(val)
+    : "m"( var ), "0" (val)
+    : "memory", "cc");
+  }
+}
