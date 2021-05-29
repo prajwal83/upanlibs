@@ -55,11 +55,11 @@ include_directories(${PROJECT_SOURCE_DIR}/libm/include/bits)
 
 include_directories(${PROJECT_SOURCE_DIR}/libcxxrt)
 
-include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/ds)
-include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/algo)
-include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/infra)
-include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/mem)
-include_directories(${PROJECT_SOURCE_DIR}/libustdcpp/mthread)
+include_directories(${PROJECT_SOURCE_DIR}/libustd/ds)
+include_directories(${PROJECT_SOURCE_DIR}/libustd/algo)
+include_directories(${PROJECT_SOURCE_DIR}/libustd/infra)
+include_directories(${PROJECT_SOURCE_DIR}/libustd/mem)
+include_directories(${PROJECT_SOURCE_DIR}/libustd/mthread)
 
 #include_directories(${PROJECT_SOURCE_DIR}/libsfn)
 #include_directories(${PROJECT_SOURCE_DIR}/libsfn/freetype2/devel)
@@ -109,10 +109,10 @@ execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libcxxrt -name
 string(REPLACE "\n" ";" CXXRT_SRC2 ${CXXRT_SRC2})
 add_library(cxxrt STATIC ${CXXRT_SRC1} ${CXXRT_SRC2})
 
-#LIBUSTDCPP
-execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libustdcpp -name '*.cpp' | grep -v CMakeFile" OUTPUT_VARIABLE LIB_USTD_CPP_SRC)
-string(REPLACE "\n" ";" LIB_USTD_CPP_SRC ${LIB_USTD_CPP_SRC})
-add_library(ustdcpp STATIC ${LIB_USTD_CPP_SRC})
+#LIBUSTD
+execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libustd -name '*.cpp' | grep -v CMakeFile" OUTPUT_VARIABLE LIB_USTD_SRC)
+string(REPLACE "\n" ";" LIB_USTD_SRC ${LIB_USTD_SRC})
+add_library(ustd STATIC ${LIB_USTD_SRC})
 
 #LIBSFN
 #execute_process(COMMAND bash -c "cd ${PROJECT_SOURCE_DIR}; find ./libsfn -name '*.c' | grep -v CMakeFile | grep -v builds" OUTPUT_VARIABLE LIB_SFN_SRC)

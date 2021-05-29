@@ -1,4 +1,4 @@
-INCLUDES="-I${UPANLIBS_HOME}/libustdcpp/infra -I${UPANLIBS_HOME}/libustdcpp/ds -I${UPANLIBS_HOME}/libustdcpp/algo"
+INCLUDES="-I${UPANLIBS_HOME}/libustd/infra -I${UPANLIBS_HOME}/libustd/ds -I${UPANLIBS_HOME}/libustd/algo"
 DFLAGS=-D__LOCAL_TEST__
 CXXFLAGS=-std=c++11
 
