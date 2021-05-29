@@ -23,7 +23,7 @@
 namespace upanui{
     class ConsoleCanvas : public Canvas {
     public:
-      ConsoleCanvas();
+      ConsoleCanvas(Canvas& parent);
 //    ConsoleCanvas(unsigned rows, unsigned columns);
 //    void GotoCursor() override;
 //    void DirectPutChar(int iPos, byte ch, byte attr) override;
@@ -48,5 +48,7 @@ namespace upanui{
 //    int _cursorPos;
 //    bool _cursorEnabled;
 //    Mutex _cursorMutex;
+    private:
+      Canvas& _parent;
     };
 }

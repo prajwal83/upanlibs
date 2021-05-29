@@ -19,7 +19,69 @@
 #include <ConsoleCanvas.h>
 
 namespace upanui {
-  ConsoleCanvas::ConsoleCanvas() {
-
+  ConsoleCanvas::ConsoleCanvas(Canvas& parent) : _parent(parent) {
   }
+
+//  GraphicsConsole::GraphicsConsole(unsigned rows, unsigned columns) : Display(rows, columns),
+//                                                                      _cursorPos(0), _cursorEnabled(false) {
+//    GraphicsVideo::Create();
+//  }
+//
+//  void GraphicsConsole::StartCursorBlink() {
+//    KernelUtil::ScheduleTimedTask("xcursorblink", 500, *this);
+//    _cursorEnabled = true;
+//  }
+//
+//  void GraphicsConsole::GotoCursor() {
+//    if (_cursorEnabled) {
+//      upan::mutex_guard g(_cursorMutex);
+//      int newCurPos = GetCurrentCursorPosition();
+//      if (newCurPos != _cursorPos) {
+//        //erase old cursor
+//        PutCursor(_cursorPos, false);
+//      }
+//      //draw new cursor
+//      PutCursor(newCurPos, true);
+//      _cursorPos = newCurPos;
+//    }
+//  }
+//
+//  void GraphicsConsole::PutCursor(int pos, bool show) {
+//    if ((uint32_t)pos >= _maxRows * _maxColumns) {
+//      return;
+//    }
+//
+//    const auto attr = GetChar(pos * DisplayConstants::NO_BYTES_PER_CHARACTER + 1);
+//    const auto color = show ? ColorPalettes::CP16::Get(attr & ColorPalettes::CP16::FG_WHITE)
+//                            : ColorPalettes::CP16::Get((attr & ColorPalettes::CP16::BG_WHITE) >> 4);
+//    const auto x = (pos % _maxColumns);
+//    const auto y = (pos / _maxColumns);
+//
+//    GraphicsVideo::Instance()->DrawCursor(x, y, color);
+//  }
+//
+//  bool GraphicsConsole::TimerTrigger() {
+//    upan::mutex_guard g(_cursorMutex);
+//    static bool showCursor = false;
+//    PutCursor(_cursorPos, showCursor);
+//    showCursor = !showCursor;
+//    return true;
+//  }
+//
+//  void GraphicsConsole::DirectPutChar(int iPos, byte ch, byte attr)
+//  {
+//    const int curPos = iPos / DisplayConstants::NO_BYTES_PER_CHARACTER;
+//    const unsigned x = (curPos % _maxColumns);
+//    const unsigned y = (curPos / _maxColumns);
+//
+//    GraphicsVideo::Instance()->DrawChar(ch, x, y,
+//                                        ColorPalettes::CP16::Get(attr & ColorPalettes::CP16::FG_WHITE),
+//                                        ColorPalettes::CP16::Get((attr & ColorPalettes::CP16::BG_WHITE) >> 4));
+//  }
+//
+//  void GraphicsConsole::DoScrollDown()
+//  {
+//    GraphicsVideo::Instance()->ScrollDown();
+//  }
+
 }

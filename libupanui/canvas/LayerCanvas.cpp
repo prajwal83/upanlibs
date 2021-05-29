@@ -18,6 +18,7 @@
 
 #include <LayerCanvas.h>
 #include <cdisplay.h>
+#include <CanvasBuilder.h>
 
 namespace upanui {
   LayerCanvas::LayerCanvas() {
@@ -28,5 +29,15 @@ namespace upanui {
     _height = fb._height;
 
     _frameBuffer.reset(new uint32_t[_width * _height]);
+  }
+
+  LayerCanvas::~LayerCanvas() noexcept {
+    for(auto c : _canvasLayers) {
+      delete c;
+    }
+  }
+
+  void LayerCanvas::addCanvas(const CanvasBuilder& builder) {
+    _canvasLayers.push_back(&builder.create(*this));
   }
 }

@@ -132,7 +132,7 @@ int putenv(char* env) ;
 
 void format_dir_attr(unsigned short attr, char* fmAttr) ;
 
-const char* getProcStatusDesc(int iStatus) ;
+const char* get_proc_status_desc(int iStatus) ;
 
 #if defined __cplusplus
 }

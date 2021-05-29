@@ -28,7 +28,7 @@ namespace upanui {
       ~BmpImage();
 
     private:
-      void Load(const void* imageData, const uint32_t transparentColor);
+      void load(const void* imageData, const uint32_t transparentColor);
       typedef struct {
         uint8_t _signature[2];
         uint32_t _fileSize;

@@ -18,23 +18,11 @@
 
 #pragma once
 
-#include <Canvas.h>
-#include <uniq_ptr.h>
-#include <list.h>
-
 namespace upanui {
-  class CanvasBuilder;
+  class Canvas;
 
-  class LayerCanvas : public Canvas {
+  class CanvasBuilder {
   public:
-    LayerCanvas();
-    ~LayerCanvas();
-
-    void addCanvas(const CanvasBuilder& builder);
-  private:
-    uint32_t _width;
-    uint32_t _height;
-    upan::uniq_ptr<uint32_t[]> _frameBuffer;
-    upan::list<Canvas*> _canvasLayers;
+    virtual Canvas& create(Canvas& parent) const = 0;
   };
 }

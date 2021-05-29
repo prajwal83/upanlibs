@@ -22,11 +22,11 @@
 
 namespace upanui {
   BmpImage::BmpImage(const void* imageData) : _imageBuffer(nullptr) {
-    Load(imageData, 0);
+    load(imageData, 0);
   }
 
   BmpImage::BmpImage(const void* imageData, const uint32_t transparentColor) : _imageBuffer(nullptr) {
-    Load(imageData, transparentColor);
+    load(imageData, transparentColor);
   }
 
   BmpImage::~BmpImage() noexcept {
@@ -38,7 +38,7 @@ namespace upanui {
     _infoHeader.DebugPrint();
   }
 
-  void BmpImage::Load(const void* imageData, uint32_t transparentColor) {
+  void BmpImage::load(const void* imageData, const uint32_t transparentColor) {
     if (imageData == nullptr) {
       throw upan::exception(XLOC, "imageData can't be null");
     }

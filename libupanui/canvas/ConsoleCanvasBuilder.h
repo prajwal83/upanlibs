@@ -18,23 +18,14 @@
 
 #pragma once
 
-#include <Canvas.h>
-#include <uniq_ptr.h>
-#include <list.h>
+#include <CanvasBuilder.h>
+#include <ConsoleCanvas.h>
 
 namespace upanui {
-  class CanvasBuilder;
-
-  class LayerCanvas : public Canvas {
+  class ConsoleCanvasBuilder : public CanvasBuilder {
   public:
-    LayerCanvas();
-    ~LayerCanvas();
-
-    void addCanvas(const CanvasBuilder& builder);
-  private:
-    uint32_t _width;
-    uint32_t _height;
-    upan::uniq_ptr<uint32_t[]> _frameBuffer;
-    upan::list<Canvas*> _canvasLayers;
+    Canvas& create(Canvas& parent) const override {
+      return *new ConsoleCanvas(parent);
+    }
   };
 }
