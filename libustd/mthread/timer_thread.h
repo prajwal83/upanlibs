@@ -19,37 +19,50 @@
 #pragma once
 
 #include <stdint.h>
-#include <atomicop.h>
+#include <mutex.h>
+#include <option.h>
 
-namespace upan{
-    class mutex {
-      private:
-      atomic::integral<uint32_t> _lock;
-      __volatile__ int _processID;
-
-      static const int FREE_MUTEX = -999;
+namespace upan {
+    class timer_thread {
     public:
-      mutex();
-      ~mutex();
+      enum state_t {
+        not_running,
+        running,
+        paused,
+        stopped
+      };
 
-      bool lock(bool bBlock = true);
-      bool unlock();
-      bool unlock(int pid);
+      timer_thread(uint32_t interval_ms);
+      ~timer_thread();
+
+      virtual void on_timer_trigger() = 0;
+
+      uint32_t interval() const {
+        return _timer_interval_ms;
+      }
+
+      state_t state() {
+        return _state.get();
+      }
+
+      void run();
+      void pause();
+      void stop();
+
+      void set_error(const upan::error& e);
+
+      bool has_error() const {
+        return _error.isEmpty();
+      }
+
+      const upan::option<upan::error>& get_error() const {
+        return _error;
+      }
 
     private:
-      void acquire();
-      void release();
-    };
-
-    class mutex_guard {
-    public:
-      mutex_guard(mutex& m) : _m(m) {
-        _m.lock();
-      }
-      ~mutex_guard() {
-        _m.unlock();
-      }
-    private:
-      mutex& _m;
+      const uint32_t _timer_interval_ms;
+      atomic::integral<state_t> _state;
+      mutex _timer_mutex;
+      upan::option<upan::error> _error;
     };
 }

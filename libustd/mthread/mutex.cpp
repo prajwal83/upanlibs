@@ -46,18 +46,16 @@ namespace upan {
   }
 
   void mutex::acquire() {
-    __volatile__ int val;
-
     while (true) {
-      val = upan::atomic::swap(_lock, 1);
-      if (val == 0)
+      if (_lock.set(1) == 0) {
         break;
-      sleepms(10);
+      }
+      yield();
     }
   }
 
   void mutex::release() {
-    upan::atomic::swap(_lock, 0);
+    _lock.set(0);
   }
 
   bool mutex::lock(bool bBlock) {
@@ -75,7 +73,7 @@ namespace upan {
           if (!bBlock)
             return false;
 
-          sleepms(10);
+          yield();
           continue;
         } else {
           _processID = FREE_MUTEX;

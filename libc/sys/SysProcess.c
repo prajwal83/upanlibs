@@ -142,6 +142,23 @@ void SysProcess_Exit(int iExitStatus)
 	__asm__ __volatile__("pop %eax") ;
 }
 
+void SysProcess_Yield()
+{
+  __asm__ __volatile__("push %eax") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+  __asm__ __volatile__("pushl $0x20") ;
+
+  DO_SYS_CALL(SYS_CALL_PROCESS_YIELD) ;
+  __asm__ __volatile__("pop %eax") ;
+}
+
 void SysProcess_Sleep(unsigned milisec)
 {
 	__asm__ __volatile__("push %eax") ;

@@ -88,6 +88,7 @@ typedef enum
 		SYS_CALL_THREAD_EXEC,
 		SYS_CALL_PROCESS_WAIT_PID,
 		SYS_CALL_PROCESS_EXIT,
+    SYS_CALL_PROCESS_YIELD,
 		SYS_CALL_PROCESS_SLEEP,
 		SYS_CALL_PROCESS_PID,
 		SYS_CALL_PROCESS_GET_ENV,
@@ -165,6 +166,7 @@ int SysProcess_Exec(const char* szFileName, int iNoOfArgs, const char *const szA
 int SysProcess_ThreadExec(uint32_t threadCaller, uint32_t entryAddress, void* arg);
 void SysProcess_WaitPID(int iProcessID);
 void SysProcess_Exit(int iExitStatus);
+void SysProcess_Yield();
 void SysProcess_Sleep(unsigned milisec);
 int SysProcess_GetPID();
 const char* SysProcess_GetEnv(const char* szVar);

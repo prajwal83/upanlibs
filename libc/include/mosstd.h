@@ -58,6 +58,7 @@ int exect(thread_entry_func_p entryPoint, void* arg);
 int childalive(int pid) ;
 int isprocessalive(int pid);
 int getpid();
+void yield();
 
 extern void SysProcess_WaitPID(int iProcessID) ;
 extern void SysProcess_Exit(int iExitStatus) ;

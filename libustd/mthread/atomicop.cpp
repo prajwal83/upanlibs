@@ -19,19 +19,24 @@
 #include <atomicop.h>
 
 namespace upan {
-  uint32_t atomic::swap(__volatile__ uint32_t &iLock, uint32_t val) {
-    __asm__ __volatile__ ("lock xchgl %0, %1"
-    : "=r" ( val )
-    : "m"( iLock ), "0" (val)
-    : "memory" );
+  namespace atomic {
+    uint32_t op::swap(__volatile__ uint32_t &iLock, uint32_t val) {
+      __asm__ __volatile__ ("lock xchgl %0, %1"
+      : "=r" ( val )
+      : "m"( iLock ), "0" (val)
+      : "memory" );
 
-    return val;
-  }
+      return val;
+    }
 
-  void atomic::add(__volatile__ uint32_t &var, uint32_t val) {
-    __asm__ __volatile__ ("lock xaddl %0, %1"
-    : "=r"(val)
-    : "m"( var ), "0" (val)
-    : "memory", "cc");
+    uint32_t op::add(__volatile__ uint32_t &var, uint32_t val) {
+      __asm__ __volatile__ ("lock xaddl %0, %1"
+      : "=r"(val)
+      : "m"( var ), "0" (val)
+      : "memory", "cc");
+      return val;
+    }
+
+
   }
 }

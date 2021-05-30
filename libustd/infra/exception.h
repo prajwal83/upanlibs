@@ -58,6 +58,8 @@ namespace upan {
 
 #define XLOC __FILE__, __LINE__
 
+template <class T> class option;
+
 class error
 {
   private:
@@ -96,6 +98,7 @@ class error
 
     template<typename Good> friend class result;
     friend class exception;
+    friend option<upan::error>;
 };
 
 class exception

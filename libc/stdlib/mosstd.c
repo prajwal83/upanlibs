@@ -48,3 +48,7 @@ void sleepms(uint32_t milliseconds) {
 int getpid() {
   return SysProcess_GetPID();
 }
+
+void yield() {
+  SysProcess_Yield();
+}
